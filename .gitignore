@@ -1,0 +1,6 @@
+# macOS
+.DS_Store
+Thumbs.db
+
+# No need to track generated zip files inside the repo
+*.zip

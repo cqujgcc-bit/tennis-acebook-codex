@@ -1,0 +1,169 @@
+<view class="page">
+  <!-- 顶部运动风 banner -->
+  <view class="banner" style="background-image:url('{{bannerImage}}')">
+    <view class="banner-mask"></view>
+    <view class="banner-text">
+      <text class="banner-title">发起一局好球 🎾</text>
+      <text class="banner-sub">约上球友，挥拍开打</text>
+    </view>
+  </view>
+
+  <!-- A 球局标题 -->
+  <view class="card">
+    <view class="card-head">
+      <text class="card-title">📝 球局标题</text>
+      <text class="card-sub">自动生成，可修改</text>
+    </view>
+    <view class="title-row">
+      <input class="title-input" placeholder="{{titlePlaceholder}}" value="{{form.title}}" data-key="title" bindinput="onInput" />
+      <view class="icon ab-icon-edit"></view>
+    </view>
+  </view>
+
+  <!-- B 时间地点 -->
+  <view class="card">
+    <view class="card-head">
+      <text class="card-title">🕒 时间地点</text>
+    </view>
+
+    <!-- 日期胶囊 -->
+    <scroll-view scroll-x class="date-scroll" enable-flex>
+      <view wx:for="{{dateList}}" wx:key="value"
+            class="date-chip {{dateIndex === index ? 'active' : ''}}"
+            data-index="{{index}}" bindtap="onDateTap">
+        <text class="date-week">{{item.week}}</text>
+        <text class="date-day">{{item.day}}</text>
+      </view>
+    </scroll-view>
+
+    <!-- 时间选择 30 分钟节点（滚动选择器）-->
+    <view class="time-row">
+      <view class="time-cell" bindtap="onPickStart">
+        <text class="time-label">开始</text>
+        <text class="time-val {{form.startTime ? '' : 'ph'}}">{{form.startTime || '选择'}} ▾</text>
+      </view>
+      <view class="time-divider"></view>
+      <view class="time-cell" bindtap="onPickEnd">
+        <text class="time-label">结束</text>
+        <text class="time-val {{form.endTime ? '' : 'ph'}}">{{form.endTime || '选择'}} ▾</text>
+      </view>
+    </view>
+
+    <!-- 地图选点 -->
+    <view class="loc-row" bindtap="onChooseLocation">
+      <view class="loc-pin"><view class="icon ab-icon-pin-green"></view></view>
+      <view class="loc-text">
+        <text class="loc-name {{form.venueName ? '' : 'ph'}}">{{form.venueName || '📍 选择球场位置'}}</text>
+        <text class="loc-addr">{{form.venueAddress || '点击在地图中搜索选择'}}</text>
+      </view>
+      <view class="loc-btn">地图选点</view>
+    </view>
+
+    <!-- 场地号 -->
+    <view class="court-row">
+      <text class="court-label">🎾 场地号</text>
+      <input class="court-input" placeholder="选填，如 3号场 / A场" value="{{form.courtNo}}" data-key="courtNo" bindinput="onInput" />
+    </view>
+  </view>
+
+  <!-- C 球局设置 -->
+  <view class="card">
+    <view class="card-head">
+      <text class="card-title">⚙️ 球局设置</text>
+    </view>
+
+    <view class="setting-row">
+      <text class="setting-label">🎽 打球类型</text>
+      <view class="pill-group">
+        <view wx:for="{{typeOptions}}" wx:key="*this"
+              class="pill {{typeIndex === index ? 'active' : ''}}"
+              data-index="{{index}}" bindtap="onTypeTap">{{item}}</view>
+      </view>
+    </view>
+
+    <view class="setting-row">
+      <text class="setting-label">👥 人数</text>
+      <view class="stepper">
+        <view class="step-btn" bindtap="onMinus">−</view>
+        <text class="step-val">{{form.maxPlayers}}</text>
+        <view class="step-btn" bindtap="onPlus">+</view>
+      </view>
+    </view>
+
+    <view class="setting-row level-row">
+      <text class="setting-label">🏅 水平要求</text>
+      <picker class="level-picker" range="{{levelOptions}}" value="{{levelIndex}}" bindchange="onLevelChange">
+        <view class="level-val">{{levelOptions[levelIndex]}} ▾</view>
+      </picker>
+    </view>
+
+    <view class="setting-row switch-row">
+      <text class="setting-label">🎾 需要自带球</text>
+      <switch checked="{{form.bringOwnBall}}" color="#0B3D2E" bindchange="onBallChange" />
+    </view>
+  </view>
+
+  <!-- D 费用与可见性 -->
+  <view class="card">
+    <view class="card-head">
+      <text class="card-title">💰 费用与可见性</text>
+    </view>
+
+    <view class="setting-row">
+      <text class="setting-label">费用类型</text>
+      <view class="pill-group">
+        <view wx:for="{{costOptions}}" wx:key="*this"
+              class="pill {{costIndex === index ? 'active' : ''}}"
+              data-index="{{index}}" bindtap="onCostTypeTap">{{item}}</view>
+      </view>
+    </view>
+
+    <block wx:if="{{costIndex === 0}}">
+      <view class="fee-row">
+        <text class="setting-label">场地总价</text>
+        <view class="fee-input-wrap">
+          <text class="fee-prefix">¥</text>
+          <input class="fee-input" type="digit" placeholder="0" value="{{form.totalCost}}" data-key="totalCost" bindinput="onInput" />
+          <text class="fee-unit">元 / 全场</text>
+        </view>
+      </view>
+      <view class="per-line">
+        <text class="per-label">按满员 {{form.maxPlayers}} 人平摊（向上取整），人均</text>
+        <text class="per-val">¥{{perPerson}}</text>
+      </view>
+      <view class="fee-hint">人均费用按「总价÷满员人数」向上取整。报名者按人均微信预付，球局结束后结算给您。开球前2小时以上取消全退，1-2小时退一半，1小时内不退；迟到取消扣10信用分。</view>
+    </block>
+
+    <view class="setting-row switch-row">
+      <text class="setting-label">🔒 仅圈子内可见</text>
+      <switch checked="{{form.isPrivate}}" color="#0B3D2E" bindchange="onPrivateChange" />
+    </view>
+  </view>
+
+  <view class="bottom-pad"></view>
+
+  <!-- 底部悬浮提交 -->
+  <view class="submit-bar">
+    <view class="submit-left">
+      <text class="submit-est-label">{{estimateLabel}}</text>
+      <text class="submit-est-val">{{estimateText}}</text>
+    </view>
+    <button class="submit-btn {{submitting ? 'disabled' : ''}}" bindtap="onSubmit">发布</button>
+  </view>
+
+  <!-- 时间滚动选择器弹层 -->
+  <view wx:if="{{showTimePicker}}" class="tp-mask" bindtap="onTimeCancel">
+    <view class="tp-panel" catchtap="noop">
+      <view class="tp-head">
+        <text class="tp-cancel" bindtap="onTimeCancel">取消</text>
+        <text class="tp-title">{{timeTarget === 'start' ? '选择开始时间' : '选择结束时间'}}</text>
+        <text class="tp-ok" bindtap="onTimeConfirm">确定</text>
+      </view>
+      <picker-view class="tp-view" value="{{[tpIndex]}}" bindchange="onTimeColChange" indicator-style="height:80rpx;">
+        <picker-view-column>
+          <view wx:for="{{timeSlots}}" wx:key="*this" class="tp-item">{{item}}</view>
+        </picker-view-column>
+      </picker-view>
+    </view>
+  </view>
+</view>
