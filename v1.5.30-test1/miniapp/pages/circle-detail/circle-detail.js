@@ -618,11 +618,14 @@ Page({
     });
   },
 
-  // ── 查看活动详情（圈内活动Tab直接导航到活动列表页）──
+  // ── 查看活动详情（导航到活动列表页，报名、查看账单等完整功能）──
   goActivityDetail(e) {
-    var activityId = Number(e.currentTarget.dataset.id);
+    var c = this.data.circle || {};
+    var isOwner = this.data.myRole === 'owner';
     wx.navigateTo({
-      url: '/pages/activity-settle/activity-settle?activityId=' + activityId + '&mode=bill',
+      url: '/pages/circle-activities/circle-activities?circleId=' + this.circleId +
+        '&circleName=' + encodeURIComponent(c.name || '圈子活动') +
+        '&isOwner=' + (isOwner ? '1' : '0'),
     });
   },
 
