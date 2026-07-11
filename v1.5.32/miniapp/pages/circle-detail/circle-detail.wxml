@@ -1,0 +1,247 @@
+<view class="page" wx:if="{{circle}}">
+  <!-- 圈子头部 -->
+  <view class="hero">
+    <view class="hero-gear" bindtap="openSettings">⚙️</view>
+    <view class="hero-top">
+      <view class="circle-avatar-lg">{{circle.name[0]}}</view>
+      <view class="hero-main">
+        <view class="hero-name">{{circle.name}}</view>
+        <view class="hero-desc">{{circle.description}}</view>
+        <view class="hero-stats">
+          <text>👥 {{circle.memberCount}} 成员</text>
+          <text class="stat-gap">🔥 {{circle.activeGames}} 个征集中</text>
+        </view>
+      </view>
+    </view>
+    <view class="invite-row" bindtap="onShareCode">
+      <text class="invite-label">🔗 邀请码</text>
+      <text class="invite-code">{{circle.inviteCode}}</text>
+      <text class="invite-copy">点击复制</text>
+    </view>
+  </view>
+
+  <!-- Tab -->
+  <view class="tabs">
+    <view class="tab {{activeTab === 'feed' ? 'active' : ''}}" data-tab="feed" bindtap="switchTab">圈内动态</view>
+    <view class="tab {{activeTab === 'activities' ? 'active' : ''}}" data-tab="activities" bindtap="switchTab">圈内活动</view>
+    <view class="tab {{activeTab === 'matches' ? 'active' : ''}}" data-tab="matches" bindtap="switchTab">圈内球局</view>
+    <view class="tab {{activeTab === 'rank' ? 'active' : ''}}" data-tab="rank" bindtap="switchTab">活跃榜</view>
+  </view>
+
+  <!-- 动态 -->
+  <view wx:if="{{activeTab === 'feed'}}" class="tab-body">
+    <view class="post-trigger" bindtap="togglePostBox">
+      <text class="post-trigger-text">＋ 发条动态，约球友一起打</text>
+    </view>
+
+    <view wx:if="{{showPostBox}}" class="post-box">
+      <textarea class="post-textarea" placeholder="今晚谁有空？周三老地方走起？聊聊战绩…" value="{{postInput}}" bindinput="onPostInput" maxlength="500" auto-height />
+      <view class="post-actions">
+        <view class="post-cancel" bindtap="togglePostBox">取消</view>
+        <view class="post-submit {{submitting ? 'disabled' : ''}}" bindtap="submitPost">发布</view>
+      </view>
+    </view>
+
+    <view wx:for="{{posts}}" wx:key="id" class="post-card">
+      <view class="post-head">
+        <image wx:if="{{item.authorAvatar}}" class="post-avatar" src="{{item.authorAvatar}}" mode="aspectFill" />
+        <view wx:else class="post-avatar post-letter">{{item.authorLetter}}</view>
+        <view class="post-meta">
+          <view class="post-author">
+            {{item.authorName}}
+            <text wx:if="{{item.isPinned}}" class="pin-tag">置顶</text>
+          </view>
+          <view class="post-time">{{item.timeText}}</view>
+        </view>
+        <view wx:if="{{item.canDelete}}" class="post-del" data-idx="{{index}}" catchtap="onDeletePost">删除</view>
+      </view>
+      <view class="post-content">{{item.content}}</view>
+      <view class="post-foot">
+        <view class="cmt-btn" data-id="{{item.id}}" data-idx="{{index}}" catchtap="toggleComments">
+          💬 {{item.commentCount || 0}}
+        </view>
+        <view class="like-btn {{item.liked ? 'liked' : ''}}" data-id="{{item.id}}" data-idx="{{index}}" catchtap="onLike">
+          {{item.liked ? '❤️' : '🤍'}} {{item.likeCount || 0}}
+        </view>
+      </view>
+
+      <!-- 评论区 -->
+      <view wx:if="{{item.showComments}}" class="comment-list">
+        <view wx:for="{{item.comments}}" wx:for-item="c" wx:key="id" class="comment-item">
+          <image wx:if="{{c.authorAvatar}}" class="cmt-avatar" src="{{c.authorAvatar}}" mode="aspectFill" />
+          <view wx:else class="cmt-avatar cmt-letter">{{c.authorLetter}}</view>
+          <view class="cmt-body">
+            <view class="cmt-author">
+              {{c.authorName}}
+              <text wx:if="{{c.replyToName}}" class="cmt-reply-to"> 回复 {{c.replyToName}}</text>
+            </view>
+            <view class="cmt-text">{{c.content}}</view>
+            <view class="cmt-meta">
+              <text class="cmt-time">{{c.timeText}}</text>
+              <text class="cmt-reply" data-pidx="{{index}}" data-cid="{{c.id}}" data-cname="{{c.authorName}}" catchtap="onReplyComment">回复</text>
+            </view>
+          </view>
+        </view>
+        <view wx:if="{{item.comments.length === 0}}" class="cmt-empty">还没有评论，来抢沙发 🛋️</view>
+        <view class="cmt-input-row">
+          <input class="cmt-input" placeholder="{{item.replyPlaceholder || '说点什么…'}}" value="{{item.cmtInput}}" data-idx="{{index}}" bindinput="onCommentInput" confirm-type="send" bindconfirm="submitComment" />
+          <view class="cmt-send {{item.cmtSubmitting ? 'disabled' : ''}}" data-idx="{{index}}" catchtap="submitComment">发送</view>
+        </view>
+      </view>
+    </view>
+
+    <view wx:if="{{posts.length === 0}}" class="empty-tip">
+      还没有动态。发一条，让圈子热闹起来吧 🎾
+    </view>
+  </view>
+
+  <!-- 球局 -->
+  <view wx:if="{{activeTab === 'matches'}}" class="tab-body">
+    <view wx:for="{{matches}}" wx:key="id" class="match-card" data-id="{{item.id}}" bindtap="goMatchDetail">
+      <view class="match-top">
+        <text class="match-title">{{item.title}}</text>
+        <text class="match-status {{item.isActive ? 'st-active' : 'st-idle'}}">{{item.statusText}}</text>
+      </view>
+      <view class="match-line">🕒 {{item.dateText}} {{item.startTime}}</view>
+      <view class="match-line">📍 {{item.venueName}}</view>
+      <view class="match-foot">
+        <text wx:if="{{item.levelRequired}}" class="match-level">🏅 {{item.levelRequired}}</text>
+        <text class="match-people">👥 {{item.current}}/{{item.max}}</text>
+      </view>
+    </view>
+    <view wx:if="{{matches.length === 0}}" class="empty-tip">
+      圈里还没有球局。点下方按钮，发起圈内第一局 🎾
+    </view>
+  </view>
+
+  <!-- 圈内活动 -->
+  <view wx:if="{{activeTab === 'activities'}}" class="tab-body">
+    <view wx:if="{{activities.length === 0}}" class="empty-tip">
+      还没有圈内活动。点下方按钮发起，或从底部"发起活动"创建 🎾
+    </view>
+    <view wx:for="{{activities}}" wx:key="id" class="match-card" catchtap="goActivityDetail" data-id="{{item.id}}">
+      <view class="match-top">
+        <text class="match-title">{{item.title}}</text>
+        <view class="tags">
+          <text class="tag {{item.isAA ? 'tag-aa' : 'tag-free'}}">{{item.feeLabel}}</text>
+          <text wx:if="{{item.settleLabel}}" class="tag tag-settle">{{item.settleLabel}}</text>
+        </view>
+      </view>
+      <view class="match-line">📅 {{item.dateStr}} {{item.timeStr}}</view>
+      <view wx:if="{{item.venueName}}" class="match-line">📍 {{item.venueName}}</view>
+      <view class="match-foot">
+        <text class="match-people">👥 {{item.currentParticipants}}/{{item.maxParticipants}} 人已报名</text>
+        <text wx:if="{{item.description}}" class="match-level">{{item.description.substr(0, 20)}}</text>
+      </view>
+    </view>
+  </view>
+
+  <!-- 排行榜 -->
+  <view wx:if="{{activeTab === 'rank'}}" class="tab-body">
+    <view class="rank-head">按圈内参与球局场次排名 · 出勤越多越靠前</view>
+    <view wx:for="{{ranking}}" wx:key="rank" class="rank-row">
+      <text class="rank-num rank-{{item.rank}}">{{item.rank}}</text>
+      <image wx:if="{{item.avatar}}" class="rank-avatar" src="{{item.avatar}}" mode="aspectFill" />
+      <view wx:else class="rank-avatar rank-letter">{{item.letter}}</view>
+      <text class="rank-name">{{item.name}}</text>
+      <text wx:if="{{item.role}}" class="rank-role">{{item.role}}</text>
+      <text class="rank-points">{{item.matchCount}} 场</text>
+    </view>
+    <view wx:if="{{ranking.length === 0}}" class="empty-tip">暂无排行数据</view>
+  </view>
+
+  <view class="bottom-spacer"></view>
+  <view class="bottom-bar">
+    <button class="bar-btn" bindtap="onCreateActivity">发起活动</button>
+  </view>
+
+  <!-- 设置菜单弹窗 -->
+  <view wx:if="{{showSettings}}" class="modal-mask" bindtap="closeSettings">
+    <view class="modal-sheet" catchtap="noop">
+      <view class="modal-title">圈子管理</view>
+      <view wx:if="{{myRole === 'owner' || myRole === 'admin'}}" class="modal-item" bindtap="openRequests">
+        <text class="modal-item-icon">✅</text>审核入圈申请
+        <text wx:if="{{pendingCount > 0}}" class="req-badge">{{pendingCount}}</text>
+      </view>
+      <view wx:if="{{myRole === 'owner' || myRole === 'admin'}}" class="modal-item" bindtap="openEditDesc">
+        <text class="modal-item-icon">📝</text>编辑圈子说明
+      </view>
+      <view wx:if="{{myRole === 'owner'}}" class="modal-item" bindtap="openTransfer">
+        <text class="modal-item-icon">👑</text>转让圈主
+      </view>
+      <view wx:if="{{myRole !== 'owner'}}" class="modal-item danger" bindtap="onLeave">
+        <text class="modal-item-icon">🚪</text>退出圈子
+      </view>
+      <view wx:if="{{myRole === 'owner'}}" class="modal-item danger" bindtap="onDismiss">
+        <text class="modal-item-icon">🗑️</text>解散圈子
+      </view>
+      <view class="modal-cancel" bindtap="closeSettings">取消</view>
+    </view>
+  </view>
+
+  <!-- 编辑说明弹窗 -->
+  <view wx:if="{{showEditDesc}}" class="modal-mask modal-center" bindtap="closeEditDesc">
+    <view class="edit-box" catchtap="noop">
+      <view class="edit-label">编辑圈子说明</view>
+      <textarea class="edit-textarea" placeholder="介绍一下这个圈子，吸引球友加入吧～" value="{{descInput}}" bindinput="onDescInput" maxlength="200" auto-height />
+      <view class="edit-actions">
+        <view class="edit-btn cancel" bindtap="closeEditDesc">取消</view>
+        <view class="edit-btn confirm" bindtap="saveDesc">保存</view>
+      </view>
+    </view>
+  </view>
+
+  <!-- 入圈申请审核弹窗 -->
+  <view wx:if="{{showRequests}}" class="modal-mask" bindtap="closeRequests">
+    <view class="modal-sheet" catchtap="noop">
+      <view class="modal-title">入圈申请（{{joinRequests.length}}）</view>
+      <view class="req-list">
+        <view wx:for="{{joinRequests}}" wx:key="id" class="req-row">
+          <image wx:if="{{item.avatar}}" class="req-avatar" src="{{item.avatar}}" mode="aspectFill" />
+          <view wx:else class="req-avatar req-letter">{{item.letter}}</view>
+          <view class="req-info">
+            <text class="req-name">{{item.name}}</text>
+            <text wx:if="{{item.ntrpLevel}}" class="req-level">NTRP {{item.ntrpLevel}}</text>
+            <text wx:if="{{item.message}}" class="req-msg">{{item.message}}</text>
+          </view>
+          <view class="req-actions">
+            <view class="req-btn reject" data-id="{{item.id}}" data-approve="false" bindtap="onReviewRequest">拒绝</view>
+            <view class="req-btn approve" data-id="{{item.id}}" data-approve="true" bindtap="onReviewRequest">通过</view>
+          </view>
+        </view>
+        <view wx:if="{{joinRequests.length === 0}}" class="cmt-empty">暂无待审核的申请</view>
+      </view>
+      <view class="modal-cancel" bindtap="closeRequests">关闭</view>
+    </view>
+  </view>
+
+  <!-- 转让圈主弹窗 -->
+  <view wx:if="{{showTransfer}}" class="modal-mask" bindtap="closeTransfer">
+    <view class="modal-sheet" catchtap="noop">
+      <view class="modal-title">选择新圈主</view>
+      <view class="member-pick">
+        <view wx:for="{{transferList}}" wx:key="userId" class="member-row" data-uid="{{item.userId}}" data-name="{{item.name}}" bindtap="onPickNewOwner">
+          <image wx:if="{{item.avatar}}" class="member-avatar" src="{{item.avatar}}" mode="aspectFill" />
+          <view wx:else class="member-avatar member-letter">{{item.letter}}</view>
+          <text class="member-name">{{item.name}}</text>
+          <text class="member-go">选为圈主 ›</text>
+        </view>
+        <view wx:if="{{transferList.length === 0}}" class="cmt-empty">圈里还没有其他成员可转让</view>
+      </view>
+      <view class="modal-cancel" bindtap="closeTransfer">取消</view>
+    </view>
+  </view>
+</view>
+  <!-- 发起活动类型选择 -->
+  <view wx:if="{{showCreateSheet}}" class="modal-mask" bindtap="closeCreateSheet">
+    <view class="modal-sheet" catchtap="noop">
+      <view class="modal-title">选择活动类型</view>
+      <view class="modal-item" data-type="social" bindtap="onSelectActivityType">
+        <text class="modal-item-icon">🎾</text>休闲约球（AA结算/免费）
+      </view>
+      <view class="modal-item" data-type="match" bindtap="onSelectActivityType">
+        <text class="modal-item-icon">🏆</text>在圈内发起球局
+      </view>
+      <view class="modal-cancel" bindtap="closeCreateSheet">取消</view>
+    </view>
+  </view>
