@@ -1,0 +1,53 @@
+<view class="page">
+  <view wx:if="{{loading}}" class="loading">加载中...</view>
+
+  <view wx:elif="{{activities.length === 0}}" class="empty">
+    <image class="empty-img" src="/images/empty.png" mode="aspectFit"></image>
+    <text class="empty-text">还没有活动，发起第一个吧</text>
+  </view>
+
+  <view wx:else class="list">
+    <view wx:for="{{activities}}" wx:key="id" class="card">
+      <view class="card-head">
+        <text class="title">{{item.title}}</text>
+        <view class="tags">
+          <text class="tag {{item.isAA ? 'tag-aa' : 'tag-free'}}">{{item.feeLabel}}</text>
+          <text wx:if="{{item.settleLabel}}" class="tag tag-settle">{{item.settleLabel}}</text>
+        </view>
+      </view>
+
+      <view class="meta">
+        <text class="meta-line">📅 {{item.dateStr}} {{item.timeStr}}</text>
+        <text wx:if="{{item.venueName}}" class="meta-line">📍 {{item.venueName}}</text>
+        <text class="meta-line">👥 {{item.currentParticipants}}/{{item.maxParticipants}} 人已报名</text>
+        <text wx:if="{{item.isAA && item.totalCostYuan}}" class="meta-line">💰 实际总开销 ¥{{item.totalCostYuan}}</text>
+      </view>
+
+      <view wx:if="{{item.description}}" class="desc">{{item.description}}</view>
+
+      <view class="signup-avatars" wx:if="{{item.signupAvatars.length > 0}}">
+        <image wx:for="{{item.signupAvatars}}" wx:for-item="av" wx:key="name" class="av" src="{{av.avatar || '/images/default-avatar.png'}}"></image>
+      </view>
+
+      <view class="actions">
+        <!-- 报名/取消（未结算且未开始才可改） -->
+        <button wx:if="{{item.settleStatus !== 'settled'}}" class="btn {{item.isSigned ? 'btn-ghost' : 'btn-primary'}}"
+          data-id="{{item.id}}" data-signed="{{item.isSigned}}" bindtap="onToggleSignup">
+          {{item.isSigned ? '取消报名' : '报名占位'}}
+        </button>
+
+        <!-- 发起人：活动开始后且为AA、尚未结算 → 结算 -->
+        <button wx:if="{{item.isCreator && item.isAA && item.isPast && item.settleStatus !== 'settled'}}"
+          class="btn btn-warn" data-id="{{item.id}}" bindtap="onSettle">
+          {{item.settleStatus === 'settling' ? '查看/补结算' : '发起结算'}}
+        </button>
+
+        <!-- 账单查看（AA且进入结算阶段） -->
+        <button wx:if="{{item.isAA && (item.settleStatus === 'settling' || item.settleStatus === 'settled')}}"
+          class="btn btn-ghost" data-id="{{item.id}}" bindtap="onViewBill">查看账单</button>
+      </view>
+    </view>
+  </view>
+
+  <view class="fab" bindtap="onCreate">+ 发起活动</view>
+</view>
