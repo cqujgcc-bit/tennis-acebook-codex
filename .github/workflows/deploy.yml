@@ -1,16 +1,16 @@
-name: 🚀 Auto Deploy to Aliyun
+name: 🚀 Auto Deploy to Aliyun + WeChat
 
 on:
   push:
     branches:
       - main
-    paths:
-      - 'v*/server/**'
 
 jobs:
-  deploy:
+  # ========== Job 1: 部署后端到阿里云 ==========
+  deploy-server:
     runs-on: ubuntu-latest
     name: Deploy Server to Aliyun
+    if: ${{ contains(join(github.event.commits.*.modified, ' '), 'server/') || contains(join(github.event.commits.*.added, ' '), 'server/') }}
     steps:
       - name: 📥 Checkout code
         uses: actions/checkout@v4
@@ -22,7 +22,6 @@ jobs:
         run: |
           LATEST_VERSION=$(ls -d v* 2>/dev/null | sort -V | tail -n 1)
           echo "version=$LATEST_VERSION" >> "$GITHUB_OUTPUT"
-          echo "✅ 最新版本: $LATEST_VERSION"
 
       - name: 🔐 测试 SSH 连接
         uses: appleboy/ssh-action@v1.2.0
@@ -33,8 +32,7 @@ jobs:
           port: 22
           script: |
             echo "✅ SSH 连接成功"
-            echo "主机名: $(hostname)"
-            ls -la /var/www/tennispro-new/package.json 2>/dev/null && echo "✅ 目标目录存在" || echo "⚠️ 目标目录为空或不存在"
+            ls -la /var/www/tennispro-new/package.json 2>/dev/null && echo "✅ 目标目录存在" || echo "⚠️ 目标目录为空"
 
       - name: 📦 同步 server 代码到阿里云
         uses: appleboy/scp-action@v0.1.7
@@ -58,12 +56,67 @@ jobs:
           script: |
             set -e
             cd /var/www/tennispro-new
-            echo "📦 安装依赖..."
             pnpm install
-            echo "🔨 编译项目..."
             npm run build
-            echo "🚀 重启 PM2..."
             pm2 restart tennispro-new
-            echo ""
-            echo "✅ 部署完成！"
+            echo "✅ 部署完成"
             pm2 show tennispro-new --no-color | grep -E 'status|restarts|uptime'
+
+  # ========== Job 2: 上传小程序到微信 ==========
+  upload-miniapp:
+    runs-on: ubuntu-latest
+    name: Upload Miniapp to WeChat
+    if: ${{ contains(join(github.event.commits.*.modified, ' '), 'miniapp/') || contains(join(github.event.commits.*.added, ' '), 'miniapp/') }}
+    steps:
+      - name: 📥 Checkout code
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 15
+
+      - name: 🔍 查找最新版本目录
+        id: find_version
+        run: |
+          LATEST_VERSION=$(ls -d v* 2>/dev/null | sort -V | tail -n 1)
+          echo "version=$LATEST_VERSION" >> "$GITHUB_OUTPUT"
+
+      - name: 🔑 写入微信私钥
+        run: |
+          echo "${{ secrets.WX_PRIVATE_KEY }}" > /tmp/private.wx517c76b146302fe5.key
+          chmod 600 /tmp/private.wx517c76b146302fe5.key
+
+      - name: 📦 安装 miniprogram-ci
+        run: |
+          mkdir -p /tmp/wx-upload
+          cd /tmp/wx-upload
+          npm init -y
+          npm install miniprogram-ci
+
+      - name: 🚀 上传小程序体验版
+        run: |
+          cd /tmp/wx-upload
+          node -e "
+            const ci = require('miniprogram-ci');
+            const version = process.env.VERSION.replace(/^v/, '');
+            const project = new ci.Project({
+              appid: 'wx517c76b146302fe5',
+              type: 'miniProgram',
+              projectPath: process.env.PROJECT_PATH,
+              privateKeyPath: '/tmp/private.wx517c76b146302fe5.key',
+              ignores: ['node_modules/**/*', 'package.json', 'package-lock.json', '*.md', 'upload_miniapp.js'],
+            });
+            console.log('📤 上传小程序... 版本: ' + version);
+            ci.upload({
+              project,
+              version,
+              desc: '自动部署: ' + new Date().toISOString().slice(0, 10),
+              setting: { es6: true, es7: true, minify: true, autoPrefixWXSS: true },
+            }).then(r => {
+              console.log('✅ 小程序上传成功!');
+            }).catch(e => {
+              console.error('❌ 上传失败:', e.message);
+              process.exit(1);
+            });
+          "
+        env:
+          VERSION: ${{ steps.find_version.outputs.version }}
+          PROJECT_PATH: ${{ github.workspace }}/${{ steps.find_version.outputs.version }}/miniapp
