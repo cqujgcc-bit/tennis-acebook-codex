@@ -1,0 +1,96 @@
+<view class="page">
+  <view wx:if="{{loading}}" class="loading">加载中...</view>
+
+  <!-- 进行中/待开始的活跃活动 -->
+  <block wx:elif="{{activities.length > 0}}">
+    <view class="list">
+      <view class="section-label">📌 近期活动</view>
+      <view wx:for="{{activities}}" wx:key="id" class="card">
+        <view class="card-head">
+          <text class="title">{{item.title}}</text>
+          <view class="tags">
+            <text class="tag {{item.isAA ? 'tag-aa' : 'tag-free'}}">{{item.feeLabel}}</text>
+            <text wx:if="{{item.settleLabel}}" class="tag tag-settle">{{item.settleLabel}}</text>
+          </view>
+        </view>
+
+        <view class="meta">
+          <text class="meta-line">📅 {{item.dateStr}} {{item.timeStr}}</text>
+          <text wx:if="{{item.venueName}}" class="meta-line">📍 {{item.venueName}}</text>
+          <text class="meta-line">👥 {{item.currentParticipants}}/{{item.maxParticipants}} 人已报名</text>
+          <text wx:if="{{item.isAA && item.totalCostYuan}}" class="meta-line">💰 实际总开销 ¥{{item.totalCostYuan}}</text>
+        </view>
+
+        <view wx:if="{{item.description}}" class="desc">{{item.description}}</view>
+
+        <!-- 报名墙：头像+名字+标记 -->
+        <view class="signup-wall" wx:if="{{item.signupWall.length > 0}}">
+          <view wx:for="{{item.signupWall}}" wx:key="userId" class="sw-item">
+            <view class="sw-av-wrap">
+              <image class="sw-av" src="{{item.avatar || '/images/default-avatar.png'}}" mode="aspectFill" />
+              <text wx:if="{{item.isCreator}}" class="sw-crown">👑</text>
+            </view>
+            <text class="sw-name {{item.isMe ? 'sw-me' : ''}}">{{item.name}}</text>
+            <text wx:if="{{item.isMe}}" class="sw-badge">我</text>
+          </view>
+          <view wx:if="{{item.signupHidden > 0}}" class="sw-item sw-more">
+            <view class="sw-av-wrap"><text class="sw-more-text">+{{item.signupHidden}}</text></view>
+          </view>
+        </view>
+        <view wx:else class="signup-empty">还没有人报名，快来占位 🎾</view>
+
+        <view class="actions">
+          <!-- 报名/取消 -->
+          <button wx:if="{{item.settleStatus !== 'settled'}}" class="btn {{item.isSigned ? 'btn-ghost' : 'btn-primary'}}"
+            data-id="{{item.id}}" data-signed="{{item.isSigned}}" bindtap="onToggleSignup">
+            {{item.isSigned ? '取消报名' : '报名占位'}}
+          </button>
+          <!-- 发起人：AA结算入口 -->
+          <button wx:if="{{item.isCreator && item.isAA && item.isPast && item.settleStatus !== 'settled'}}"
+            class="btn btn-warn" data-id="{{item.id}}" bindtap="onSettle">
+            {{item.settleStatus === 'settling' ? '查看/补结算' : '发起结算'}}
+          </button>
+          <!-- 账单查看 -->
+          <button wx:if="{{item.isAA && (item.settleStatus === 'settling' || item.settleStatus === 'settled')}}"
+            class="btn btn-ghost" data-id="{{item.id}}" bindtap="onViewBill">查看账单</button>
+        </view>
+      </view>
+    </view>
+
+    <!-- 历史活动 -->
+    <view wx:if="{{historyActivities.length > 0}}" class="history-section">
+      <view class="section-label {{historyShow ? 'section-open' : ''}}" bindtap="toggleHistory">
+        📂 历史活动（{{historyActivities.length}}）
+        <text class="history-arrow">{{historyShow ? '收起 ▲' : '展开 ▼'}}</text>
+      </view>
+      <view wx:if="{{historyShow}}" class="list">
+        <view wx:for="{{historyActivities}}" wx:key="id" class="card card-history">
+          <view class="card-head">
+            <text class="title">{{item.title}}</text>
+            <view class="tags">
+              <text class="tag tag-settle">{{item.settleStatus === 'settled' ? '已结算' : '已结束'}}</text>
+            </view>
+          </view>
+          <view class="meta">
+            <text class="meta-line">📅 {{item.dateStr}} {{item.timeStr}}</text>
+            <text wx:if="{{item.venueName}}" class="meta-line">📍 {{item.venueName}}</text>
+            <text class="meta-line">👥 {{item.currentParticipants}}/{{item.maxParticipants}} 人</text>
+            <text wx:if="{{item.isAA && item.totalCostYuan}}" class="meta-line">💰 ¥{{item.totalCostYuan}}</text>
+          </view>
+          <view class="actions">
+            <button wx:if="{{item.isAA && (item.settleStatus === 'settling' || item.settleStatus === 'settled')}}"
+              class="btn btn-ghost" data-id="{{item.id}}" bindtap="onViewBill">查看账单</button>
+          </view>
+        </view>
+      </view>
+    </view>
+  </block>
+
+  <!-- 没有任何活动 -->
+  <view wx:elif="{{activities.length === 0 && historyActivities.length === 0}}" class="empty">
+    <image class="empty-img" src="/images/empty.png" mode="aspectFit"></image>
+    <text class="empty-text">还没有活动，发起第一个吧</text>
+  </view>
+
+  <view class="fab" bindtap="onCreate">+ 发起活动</view>
+</view>

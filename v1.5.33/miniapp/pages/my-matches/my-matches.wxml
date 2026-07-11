@@ -1,0 +1,147 @@
+<view class="page">
+  <!-- 顶部统计 -->
+  <view class="stat-row">
+    <view class="stat-card">
+      <view class="stat-num">{{authoredCount}}</view>
+      <view class="stat-label">我发起的</view>
+    </view>
+    <view class="stat-card">
+      <view class="stat-num">{{joinedConfirmedCount}}</view>
+      <view class="stat-label">我参与的</view>
+    </view>
+  </view>
+  <view class="stat-hint">「我参与的」仅统计经发起人确认完成的球局</view>
+
+  <!-- Tab 切换 -->
+  <view class="tabs">
+    <view class="tab {{tab === 'authored' ? 'tab-active' : ''}}" data-tab="authored" bindtap="switchTab">
+      我发起的（{{authoredCount}}）
+    </view>
+    <view class="tab {{tab === 'joined' ? 'tab-active' : ''}}" data-tab="joined" bindtap="switchTab">
+      我参与的（{{joinedConfirmedCount}}<text wx:if="{{!loading}}">/{{joinedActive.length + joinedHistory.length}}</text>）
+    </view>
+  </view>
+
+  <!-- 待操作提醒横幅 -->
+  <view wx:if="{{!loading && tab === 'authored' && authoredPendingAction > 0}}" class="pending-banner" bindtap="goDetailByPending">
+    <text class="pending-icon">⏰</text>
+    <text class="pending-text">你有 {{authoredPendingAction}} 场球局已结束，{{'待确认完成 →'}}</text>
+  </view>
+
+  <!-- 列表 -->
+  <view class="list" wx:if="{{!loading}}">
+    <block wx:if="{{tab === 'authored'}}">
+      <!-- 进行中 -->
+      <view wx:if="{{authoredActive.length > 0}}">
+        <view class="section-label">📌 进行中（{{authoredActive.length}}）</view>
+        <view wx:for="{{authoredActive}}" wx:key="id" class="card" data-id="{{item.id}}" bindtap="goDetail">
+          <view class="card-head">
+            <text class="card-title">{{item.title}}</text>
+            <view class="state {{item.stateClass}}">{{item.stateText}}</view>
+          </view>
+          <view class="card-meta">🕒 {{item.dateText}} {{item.week}} {{item.startTime}}{{item.endTime ? '-' + item.endTime : ''}}</view>
+          <view class="card-meta" wx:if="{{item.venueName}}">📍 {{item.venueName}}</view>
+          <view class="card-foot">
+            <view class="tags">
+              <text wx:for="{{item.tags}}" wx:for-item="t" wx:key="*this" class="tag">{{t}}</text>
+            </view>
+            <view class="foot-right">
+              <text class="players">👥 {{item.currentPlayers}}/{{item.maxPlayers}}</text>
+              <text class="price">{{item.priceText}}</text>
+            </view>
+          </view>
+        </view>
+      </view>
+      <!-- 历史 -->
+      <view wx:if="{{authoredHistory.length > 0}}" class="history-section">
+        <view class="section-label {{historyShow.auth ? 'section-open' : ''}}" data-key="auth" bindtap="toggleHistory">
+          📂 历史球局（{{authoredHistory.length}}）
+          <text class="history-arrow">{{historyShow.auth ? '收起 ▲' : '展开 ▼'}}</text>
+        </view>
+        <view wx:if="{{historyShow.auth}}">
+          <view wx:for="{{authoredHistory}}" wx:key="id" class="card card-history" data-id="{{item.id}}" bindtap="goDetail">
+            <view class="card-head">
+              <text class="card-title">{{item.title}}</text>
+              <view class="state {{item.stateClass}}">{{item.stateText}}</view>
+            </view>
+            <view class="card-meta">🕒 {{item.dateText}} {{item.week}} {{item.startTime}}{{item.endTime ? '-' + item.endTime : ''}}</view>
+            <view class="card-meta" wx:if="{{item.venueName}}">📍 {{item.venueName}}</view>
+            <view class="card-foot">
+              <view class="tags">
+                <text wx:for="{{item.tags}}" wx:for-item="t" wx:key="*this" class="tag">{{t}}</text>
+              </view>
+              <view class="foot-right">
+                <text class="players">👥 {{item.currentPlayers}}/{{item.maxPlayers}}</text>
+                <text class="price">{{item.priceText}}</text>
+              </view>
+            </view>
+          </view>
+        </view>
+      </view>
+      <!-- 空状态 -->
+      <view wx:if="{{authoredActive.length === 0 && authoredHistory.length === 0}}" class="empty">
+        <view class="empty-emoji">🎾</view>
+        <view class="empty-text">还没有发起过球局</view>
+        <view class="empty-btn" bindtap="goBooking">去约球</view>
+      </view>
+    </block>
+
+    <block wx:if="{{tab === 'joined'}}">
+      <!-- 进行中 -->
+      <view wx:if="{{joinedActive.length > 0}}">
+        <view class="section-label">📌 进行中（{{joinedActive.length}}）</view>
+        <view wx:for="{{joinedActive}}" wx:key="id" class="card" data-id="{{item.id}}" bindtap="goDetail">
+          <view class="card-head">
+            <text class="card-title">{{item.title}}</text>
+            <view class="state {{item.stateClass}}">{{item.stateText}}</view>
+          </view>
+          <view class="card-meta">🕒 {{item.dateText}} {{item.week}} {{item.startTime}}{{item.endTime ? '-' + item.endTime : ''}}</view>
+          <view class="card-meta" wx:if="{{item.venueName}}">📍 {{item.venueName}}</view>
+          <view class="card-foot">
+            <view class="tags">
+              <text wx:for="{{item.tags}}" wx:for-item="t" wx:key="*this" class="tag">{{t}}</text>
+            </view>
+            <view class="foot-right">
+              <text class="players">👥 {{item.currentPlayers}}/{{item.maxPlayers}}</text>
+              <text class="price">{{item.priceText}}</text>
+            </view>
+          </view>
+        </view>
+      </view>
+      <!-- 历史 -->
+      <view wx:if="{{joinedHistory.length > 0}}" class="history-section">
+        <view class="section-label {{historyShow.join ? 'section-open' : ''}}" data-key="join" bindtap="toggleHistory">
+          📂 历史球局（{{joinedHistory.length}}）
+          <text class="history-arrow">{{historyShow.join ? '收起 ▲' : '展开 ▼'}}</text>
+        </view>
+        <view wx:if="{{historyShow.join}}">
+          <view wx:for="{{joinedHistory}}" wx:key="id" class="card card-history" data-id="{{item.id}}" bindtap="goDetail">
+            <view class="card-head">
+              <text class="card-title">{{item.title}}</text>
+              <view class="state {{item.stateClass}}">{{item.stateText}}</view>
+            </view>
+            <view class="card-meta">🕒 {{item.dateText}} {{item.week}} {{item.startTime}}{{item.endTime ? '-' + item.endTime : ''}}</view>
+            <view class="card-meta" wx:if="{{item.venueName}}">📍 {{item.venueName}}</view>
+            <view class="card-foot">
+              <view class="tags">
+                <text wx:for="{{item.tags}}" wx:for-item="t" wx:key="*this" class="tag">{{t}}</text>
+              </view>
+              <view class="foot-right">
+                <text class="players">👥 {{item.currentPlayers}}/{{item.maxPlayers}}</text>
+                <text class="price">{{item.priceText}}</text>
+              </view>
+            </view>
+          </view>
+        </view>
+      </view>
+      <!-- 空状态 -->
+      <view wx:if="{{joinedActive.length === 0 && joinedHistory.length === 0}}" class="empty">
+        <view class="empty-emoji">🤝</view>
+        <view class="empty-text">还没有参与过球局</view>
+        <view class="empty-btn" bindtap="goBooking">去约球</view>
+      </view>
+    </block>
+  </view>
+
+  <view wx:if="{{loading}}" class="loading">加载中…</view>
+</view>
