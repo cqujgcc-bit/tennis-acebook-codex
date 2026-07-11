@@ -6,11 +6,10 @@ on:
       - main
 
 jobs:
-  # ========== Job 1: 部署后端到阿里云 ==========
+  # ===== Job 1: 部署后端到阿里云 =====
   deploy-server:
     runs-on: ubuntu-latest
     name: Deploy Server to Aliyun
-    if: ${{ contains(join(github.event.commits.*.modified, ' '), 'server/') || contains(join(github.event.commits.*.added, ' '), 'server/') }}
     steps:
       - name: 📥 Checkout code
         uses: actions/checkout@v4
@@ -32,7 +31,6 @@ jobs:
           port: 22
           script: |
             echo "✅ SSH 连接成功"
-            ls -la /var/www/tennispro-new/package.json 2>/dev/null && echo "✅ 目标目录存在" || echo "⚠️ 目标目录为空"
 
       - name: 📦 同步 server 代码到阿里云
         uses: appleboy/scp-action@v0.1.7
@@ -60,13 +58,11 @@ jobs:
             npm run build
             pm2 restart tennispro-new
             echo "✅ 部署完成"
-            pm2 show tennispro-new --no-color | grep -E 'status|restarts|uptime'
 
-  # ========== Job 2: 上传小程序到微信 ==========
+  # ===== Job 2: 上传小程序到微信 =====
   upload-miniapp:
     runs-on: ubuntu-latest
     name: Upload Miniapp to WeChat
-    if: ${{ contains(join(github.event.commits.*.modified, ' '), 'miniapp/') || contains(join(github.event.commits.*.added, ' '), 'miniapp/') }}
     steps:
       - name: 📥 Checkout code
         uses: actions/checkout@v4
@@ -108,7 +104,7 @@ jobs:
             ci.upload({
               project,
               version,
-              desc: '自动部署: ' + new Date().toISOString().slice(0, 10),
+              desc: '自动部署 v' + version,
               setting: { es6: true, es7: true, minify: true, autoPrefixWXSS: true },
             }).then(r => {
               console.log('✅ 小程序上传成功!');
