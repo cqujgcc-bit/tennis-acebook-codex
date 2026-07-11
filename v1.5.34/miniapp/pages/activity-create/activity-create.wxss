@@ -1,0 +1,294 @@
+/* ============================================================
+   v1.5.30 活动创建页 — 运动风设计系统对齐
+   ============================================================ */
+
+/* 页面容器 */
+.page-activity-create {
+  min-height: 100vh;
+  background: #F4F6F5;
+  padding: 20rpx 28rpx 200rpx;
+  box-sizing: border-box;
+}
+
+/* ── 模板快捷区（无色卡片）── */
+.tpl-section {
+  background: #fff;
+  border-radius: 24rpx;
+  margin-bottom: 20rpx;
+  overflow: hidden;
+}
+.tpl-toggle {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 26rpx 28rpx;
+  font-size: 28rpx;
+  color: #1A2420;
+  font-weight: 600;
+}
+.tpl-toggle .arrow {
+  color: #8A968F;
+  font-size: 26rpx;
+  font-weight: 400;
+}
+.tpl-list { border-top: 2rpx solid #EBEEED; }
+.tpl-empty { padding: 24rpx 28rpx; color: #8A968F; font-size: 25rpx; }
+.tpl-item {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 22rpx 28rpx;
+  border-bottom: 2rpx solid #F0F2F1;
+}
+.tpl-info { flex: 1; min-width: 0; }
+.tpl-title { font-size: 28rpx; color: #1A2420; display: block; }
+.tpl-sub { font-size: 23rpx; color: #8A968F; display: block; margin-top: 6rpx; }
+.tpl-del { color: #E85C5C; font-size: 25rpx; padding-left: 20rpx; flex-shrink: 0; }
+
+/* ── 表单分区卡片 ── */
+.form-section {
+  position: relative;
+  background: #fff;
+  border-radius: 24rpx;
+  margin-bottom: 20rpx;
+  overflow: hidden;
+  animation: ab-card-enter 0.4s ease-out both;
+}
+.form-section:nth-child(2) { animation-delay: 0.05s; }
+.form-section:nth-child(3) { animation-delay: 0.10s; }
+.form-section:nth-child(4) { animation-delay: 0.15s; }
+.form-section:nth-child(5) { animation-delay: 0.20s; }
+
+.section-accent {
+  position: absolute;
+  left: 0; top: 0;
+  width: 8rpx; height: 48rpx;
+  background: linear-gradient(180deg, #D4FF3F 0%, #0B3D2E 100%);
+  border-radius: 0 0 4rpx 0;
+}
+
+.section-hd {
+  display: flex;
+  align-items: center;
+  padding: 28rpx 28rpx 0;
+}
+.section-hd-icon {
+  font-size: 32rpx;
+  margin-right: 12rpx;
+}
+.section-hd-title {
+  font-size: 30rpx;
+  font-weight: 700;
+  color: #1A2420;
+}
+
+.section-bd {
+  padding: 16rpx 28rpx 20rpx;
+}
+
+/* ── 表单项 ── */
+.field {
+  display: flex;
+  align-items: center;
+  min-height: 88rpx;
+  border-bottom: 2rpx solid #F0F2F1;
+}
+.field:last-child { border-bottom: none; }
+.field-col {
+  flex-direction: column;
+  align-items: stretch;
+}
+.field-lbl {
+  width: 150rpx;
+  font-size: 27rpx;
+  color: #5A6863;
+  flex-shrink: 0;
+}
+.field-inp {
+  flex: 1;
+  font-size: 28rpx;
+  color: #1A2420;
+  padding: 8rpx 0;
+}
+.field-sel {
+  flex: 1;
+  font-size: 28rpx;
+  color: #1A2420;
+}
+.field-ipta {
+  width: 100%;
+  min-height: 140rpx;
+  font-size: 28rpx;
+  margin-top: 12rpx;
+  line-height: 1.6;
+}
+.field-hint {
+  font-size: 23rpx;
+  color: #D98A2B;
+  line-height: 1.5;
+  padding: 14rpx 4rpx;
+}
+
+/* ── 日期快速选择 ── */
+.date-quick-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12rpx;
+  padding: 8rpx 0 16rpx;
+}
+.date-chip {
+  padding: 14rpx 26rpx;
+  border-radius: 999rpx;
+  font-size: 25rpx;
+  color: #5A6863;
+  background: #F1F4F2;
+  transition: all 0.15s ease;
+}
+.date-chip:active {
+  transform: scale(0.94);
+}
+.chip-on {
+  background: #0B3D2E;
+  color: #D4FF3F;
+  font-weight: 700;
+}
+.date-picker-chip {
+  background: #fff;
+  border: 2rpx solid #E4EAE7;
+}
+
+/* ── 时间联排 ── */
+.time-row {
+  display: flex;
+  align-items: center;
+  gap: 20rpx;
+  padding: 12rpx 0;
+}
+.time-picker {
+  flex: 1;
+  text-align: center;
+  padding: 18rpx 0;
+  background: #F1F4F2;
+  border-radius: 16rpx;
+  font-size: 28rpx;
+  color: #1A2420;
+}
+.time-connector {
+  font-size: 26rpx;
+  color: #8A968F;
+  flex-shrink: 0;
+}
+
+/* ── 费用模式 ── */
+.fee-row {
+  display: flex;
+  gap: 16rpx;
+  padding: 8rpx 0;
+}
+.fee-opt {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 12rpx;
+  height: 88rpx;
+  border-radius: 16rpx;
+  background: #F1F4F2;
+  border: 2rpx solid #E4EAE7;
+  transition: all 0.15s ease;
+}
+.fee-opt:active {
+  transform: scale(0.96);
+}
+.fee-on {
+  background: #0B3D2E;
+  border-color: #0B3D2E;
+}
+.fee-on .fee-lbl {
+  color: #D4FF3F;
+  font-weight: 700;
+}
+.fee-ico { font-size: 34rpx; }
+.fee-lbl { font-size: 28rpx; color: #5A6863; }
+
+/* ── 人数步进器 ── */
+.stepper-row {
+  display: flex;
+  align-items: center;
+  gap: 16rpx;
+}
+.stepper-btn {
+  width: 56rpx; height: 56rpx;
+  border-radius: 50%;
+  background: #F1F4F2;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 34rpx;
+  font-weight: 700;
+  color: #0B3D2E;
+}
+.stepper-btn:active {
+  background: #0B3D2E;
+  color: #D4FF3F;
+}
+.stepper-val {
+  font-size: 34rpx;
+  font-weight: 700;
+  color: #1A2420;
+  min-width: 60rpx;
+  text-align: center;
+}
+
+/* ── 提示文字 ── */
+.hint-tip {
+  font-size: 24rpx;
+  color: #D98A2B;
+  line-height: 1.6;
+  padding: 14rpx 4rpx;
+}
+.hint-fee {
+  background: #FFF8F0;
+  border-radius: 12rpx;
+  padding: 18rpx 20rpx;
+  margin-top: 12rpx;
+  color: #B07A3E;
+}
+
+/* ── 底部操作栏（对齐 app 统一样式）── */
+.bottom-spacer { height: 20rpx; }
+.create-bar {
+  position: fixed;
+  left: 0; right: 0; bottom: 0;
+  display: flex;
+  gap: 18rpx;
+  padding: 18rpx 28rpx calc(18rpx + env(safe-area-inset-bottom));
+  background: rgba(255,255,255,0.94);
+  backdrop-filter: blur(16rpx);
+  box-shadow: 0 -6rpx 24rpx rgba(11,61,46,0.08);
+}
+.create-bar .bar-btn {
+  flex: 1;
+  height: 88rpx;
+  border-radius: 999rpx;
+  font-size: 30rpx;
+  font-weight: 700;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: transform 0.08s ease;
+}
+.create-bar .bar-btn:active {
+  transform: scale(0.96);
+}
+.create-bar .bar-btn::after { border: none; }
+
+.create-bar .bar-btn-primary {
+  background: linear-gradient(135deg, #0B3D2E 0%, #14653C 100%);
+  color: #D4FF3F;
+}
+.create-bar .bar-btn-ghost {
+  flex: 0 0 30%;
+  background: #F1F4F2;
+  color: #0B3D2E;
+}
