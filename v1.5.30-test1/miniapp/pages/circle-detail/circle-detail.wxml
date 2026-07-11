@@ -23,6 +23,7 @@
   <!-- Tab -->
   <view class="tabs">
     <view class="tab {{activeTab === 'feed' ? 'active' : ''}}" data-tab="feed" bindtap="switchTab">圈内动态</view>
+    <view class="tab {{activeTab === 'activities' ? 'active' : ''}}" data-tab="activities" bindtap="switchTab">圈内活动</view>
     <view class="tab {{activeTab === 'matches' ? 'active' : ''}}" data-tab="matches" bindtap="switchTab">圈内球局</view>
     <view class="tab {{activeTab === 'rank' ? 'active' : ''}}" data-tab="rank" bindtap="switchTab">活跃榜</view>
   </view>
@@ -110,6 +111,28 @@
     </view>
     <view wx:if="{{matches.length === 0}}" class="empty-tip">
       圈里还没有球局。点下方按钮，发起圈内第一局 🎾
+    </view>
+  </view>
+
+  <!-- 圈内活动 -->
+  <view wx:if="{{activeTab === 'activities'}}" class="tab-body">
+    <view wx:if="{{activities.length === 0}}" class="empty-tip">
+      还没有圈内活动。点下方按钮发起，或从底部"发起活动"创建 🎾
+    </view>
+    <view wx:for="{{activities}}" wx:key="id" class="match-card" catchtap="goActivityDetail" data-id="{{item.id}}">
+      <view class="match-top">
+        <text class="match-title">{{item.title}}</text>
+        <view class="tags">
+          <text class="tag {{item.isAA ? 'tag-aa' : 'tag-free'}}">{{item.feeLabel}}</text>
+          <text wx:if="{{item.settleLabel}}" class="tag tag-settle">{{item.settleLabel}}</text>
+        </view>
+      </view>
+      <view class="match-line">📅 {{item.dateStr}} {{item.timeStr}}</view>
+      <view wx:if="{{item.venueName}}" class="match-line">📍 {{item.venueName}}</view>
+      <view class="match-foot">
+        <text class="match-people">👥 {{item.currentParticipants}}/{{item.maxParticipants}} 人已报名</text>
+        <text wx:if="{{item.description}}" class="match-level">{{item.description.substr(0, 20)}}</text>
+      </view>
     </view>
   </view>
 

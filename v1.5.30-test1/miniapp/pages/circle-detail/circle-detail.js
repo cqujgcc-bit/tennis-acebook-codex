@@ -22,11 +22,22 @@ function weekDay(dateStr) {
   return '周' + '日一二三四五六'.charAt(d.getDay());
 }
 
+// 判断球局是否已过期（根据日期+开始时间）
+function isDatePassed(dateStr, startTime) {
+  if (!dateStr) return false;
+  try {
+    var t = (dateStr + ' ' + (startTime || '00:00')).replace(/-/g, '/');
+    var dt = new Date(t);
+    return !isNaN(dt.getTime()) && Date.now() >= dt.getTime();
+  } catch (e) { return false; }
+}
+
 Page({
   data: {
     circle: null,
-    activeTab: 'feed', // feed | matches | rank
+    activeTab: 'feed', // feed | activities | matches | rank
     posts: [],
+    activities: [],
     matches: [],
     ranking: [],
     myRole: 'member',
@@ -106,7 +117,11 @@ Page({
   },
 
   switchTab(e) {
-    this.setData({ activeTab: e.currentTarget.dataset.tab });
+    var tab = e.currentTarget.dataset.tab;
+    this.setData({ activeTab: tab });
+    if (tab === 'activities' && this.circleId) {
+      this.loadActivities();
+    }
   },
 
   loadPosts() {
@@ -202,7 +217,8 @@ Page({
       .getMatches(this.circleId)
       .then(function (list) {
         var matches = (list || []).map(function (m) {
-          var isActive = m.status === 'open';
+          var isExpired = m.status === 'open' && isDatePassed(m.matchDate, m.startTime);
+          var isActive = m.status === 'open' && !isExpired;
           return {
             id: m.id,
             title: m.title || '网球局',
@@ -212,7 +228,7 @@ Page({
             levelRequired: m.levelRequired || '',
             current: m.currentParticipants || 0,
             max: m.maxParticipants || 0,
-            statusText: isActive ? '征集中' : (m.status === 'full' ? '已满员' : (m.status === 'completed' ? '已结束' : '已取消')),
+            statusText: isActive ? '征集中' : (isExpired ? '已结束' : (m.status === 'full' ? '已满员' : (m.status === 'completed' ? '已结束' : '已取消'))),
             isActive: isActive,
             authorAvatar: m.authorAvatar || '',
             authorLetter: (m.authorName || '?').charAt(0),
@@ -226,6 +242,39 @@ Page({
       .catch(function () {
         that.setData({ matches: [] });
       });
+  },
+
+  // ── 加载圈内活动列表 ──
+  loadActivities() {
+    var that = this;
+    api.circle.getActivities(this.circleId).then(function (list) {
+      var activities = (list || []).map(function (a) {
+        var dateStr = a.activityDate || '';
+        var timeStr = (a.startTime || '') + (a.endTime ? ('-' + a.endTime) : '');
+        var isAA = a.feeMode === 'aa';
+        var startTs = 0;
+        if (dateStr) {
+          var t = (dateStr + ' ' + (a.startTime || '00:00')).replace(/-/g, '/');
+          startTs = new Date(t).getTime() || 0;
+        }
+        return {
+          id: a.id,
+          title: a.title || '活动',
+          dateStr: dateStr,
+          timeStr: timeStr,
+          venueName: a.venueName || '',
+          description: a.description || '',
+          currentParticipants: a.currentParticipants || 0,
+          maxParticipants: a.maxParticipants || 0,
+          isAA: isAA,
+          feeLabel: isAA ? 'AA结算' : '免费',
+          settleLabel: a.settleStatus === 'settled' ? '已结算' : (a.settleStatus === 'settling' ? '待支付' : ''),
+        };
+      });
+      that.setData({ activities: activities });
+    }).catch(function () {
+      that.setData({ activities: [] });
+    });
   },
 
   onShareCode() {
@@ -566,6 +615,14 @@ Page({
       url: '/pages/circle-activities/circle-activities?circleId=' + this.circleId +
         '&circleName=' + encodeURIComponent(c.name || '圈子活动') +
         '&isOwner=' + (isOwner ? '1' : '0'),
+    });
+  },
+
+  // ── 查看活动详情（圈内活动Tab直接导航到活动列表页）──
+  goActivityDetail(e) {
+    var activityId = Number(e.currentTarget.dataset.id);
+    wx.navigateTo({
+      url: '/pages/activity-settle/activity-settle?activityId=' + activityId + '&mode=bill',
     });
   },
 

@@ -19,7 +19,8 @@ var TYPE_MAP = { singles: '单打', doubles: '双打', mixed_doubles: '混双', 
 function decorate(m, now) {
   var startDt = parseDateTime(m.matchDate, m.startTime);
   var endDt = parseDateTime(m.matchDate, m.endTime || m.startTime);
-  var ended = endDt ? now.getTime() >= endDt.getTime() : false;
+  var endDtOrStart = parseDateTime(m.matchDate, m.endTime || m.startTime || '00:00');
+  var ended = endDtOrStart ? now.getTime() >= endDtOrStart.getTime() : false;
   var status = (m.status || '').toLowerCase();
   // 状态文案
   var stateText = '招募中', stateClass = 'st-open';
