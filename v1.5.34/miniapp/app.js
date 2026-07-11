@@ -38,3 +38,5 @@ App({
     apiBaseUrl: 'https://tennispro.cn',
   },
 });
+
+// v1.5.34 活动取消功能 - 前端同步
