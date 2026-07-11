@@ -1,0 +1,67 @@
+name: 🚀 Auto Deploy to Aliyun
+
+on:
+  push:
+    branches:
+      - main
+    paths:
+      - 'v*/server/**'   # 只有 server 代码变更时才触发部署
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    name: Deploy Server to Aliyun
+    steps:
+      - name: 📥 Checkout code
+        uses: actions/checkout@v3
+        with:
+          fetch-depth: 15   # 只需要拿到最新的版本文件夹即可
+
+      - name: 🔍 查找最新版本目录
+        id: find_version
+        run: |
+          LATEST_VERSION=$(ls -d v* 2>/dev/null | sort -V | tail -n 1)
+          if [ -z "$LATEST_VERSION" ]; then
+            echo "❌ 未找到任何版本目录 (v*)"
+            exit 1
+          fi
+          echo "✅ 发现最新版本: $LATEST_VERSION"
+          echo "version=$LATEST_VERSION" >> "$GITHUB_OUTPUT"
+
+      - name: 🔧 Install sshpass
+        run: sudo apt-get update -qq && sudo apt-get install -y -qq sshpass
+
+      - name: 📦 同步 server 代码到阿里云
+        env:
+          SSHPASS: ${{ secrets.ALIYUN_PASSWORD }}
+        run: |
+          echo "🔄 正在同步 ${{ steps.find_version.outputs.version }}/server/ → 阿里云:/var/www/tennispro-new/"
+          sshpass -e rsync -avz \
+            -e "ssh -o StrictHostKeyChecking=no" \
+            --exclude 'node_modules' \
+            --exclude '.env' \
+            --exclude 'storage-data/*.json' \
+            --exclude 'dist/**' \
+            ${{ steps.find_version.outputs.version }}/server/ \
+            root@120.78.0.96:/var/www/tennispro-new/
+
+      - name: 🔄 安装依赖 + 编译 + 重启
+        env:
+          SSHPASS: ${{ secrets.ALIYUN_PASSWORD }}
+        run: |
+          sshpass -e ssh -o StrictHostKeyChecking=no root@120.78.0.96 "
+            set -e
+            echo '📦 安装依赖...'
+            cd /var/www/tennispro-new
+            pnpm install
+
+            echo '🔨 编译项目...'
+            npm run build
+
+            echo '🚀 重启 PM2...'
+            pm2 restart tennispro-new
+
+            echo ''
+            echo '✅ 部署完成！'
+            pm2 show tennispro-new --no-color | grep -E 'status|restarts|uptime'
+          "
