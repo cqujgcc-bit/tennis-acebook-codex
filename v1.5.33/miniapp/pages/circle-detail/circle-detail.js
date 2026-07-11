@@ -45,7 +45,7 @@ Page({
     matchesHistory: [],
     ranking: [],
     matchHistoryShow: false,
-    activityHistoryShow: false,,
+    activityHistoryShow: false,
     myRole: 'member',
     loading: true,
     postInput: '',
