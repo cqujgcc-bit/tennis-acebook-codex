@@ -1,0 +1,66 @@
+<view class="admin-page" wx:if="{{isAdmin}}">
+  <view class="hd">
+    <view class="hd-title">管理后台</view>
+    <view class="hd-sub">TennisPro · 超级管理员</view>
+  </view>
+
+  <!-- 数据看板 -->
+  <view class="section-title">数据看板</view>
+  <view class="stat-grid" wx:if="{{stats}}">
+    <view class="stat-card">
+      <view class="stat-num">{{stats.totalStudents || 0}}</view>
+      <view class="stat-label">注册用户</view>
+    </view>
+    <view class="stat-card">
+      <view class="stat-num">{{stats.totalCoaches || 0}}</view>
+      <view class="stat-label">在册教练</view>
+    </view>
+    <view class="stat-card">
+      <view class="stat-num">{{stats.totalMatches || 0}}</view>
+      <view class="stat-label">累计球局</view>
+    </view>
+    <view class="stat-card">
+      <view class="stat-num">{{stats.weekMatches || 0}}</view>
+      <view class="stat-label">本周球局</view>
+    </view>
+    <view class="stat-card">
+      <view class="stat-num">{{stats.weekParticipants || 0}}</view>
+      <view class="stat-label">本周报名</view>
+    </view>
+    <view class="stat-card">
+      <view class="stat-num">{{stats.totalBookings || 0}}</view>
+      <view class="stat-label">约课订单</view>
+    </view>
+  </view>
+  <view class="loading-tip" wx:if="{{loading}}">加载中…</view>
+
+  <!-- 管理功能 -->
+  <view class="section-title">管理功能</view>
+  <view class="menu-list">
+    <view class="menu-item" bindtap="go" data-page="admin-feedback">
+      <view class="mi-left"><text class="mi-emoji">📮</text><text class="mi-name">用户反馈</text></view>
+      <view class="mi-right">
+        <text class="badge" wx:if="{{pendingFeedback > 0}}">{{pendingFeedback}}</text>
+        <text class="arrow">›</text>
+      </view>
+    </view>
+    <view class="menu-item" bindtap="go" data-page="admin-users">
+      <view class="mi-left"><text class="mi-emoji">👥</text><text class="mi-name">人员管理（含手机号 / 信用分）</text></view>
+      <text class="arrow">›</text>
+    </view>
+    <view class="menu-item" bindtap="go" data-page="admin-coaches">
+      <view class="mi-left"><text class="mi-emoji">🎾</text><text class="mi-name">教练审核</text></view>
+      <text class="arrow">›</text>
+    </view>
+    <view class="menu-item" bindtap="go" data-page="admin-broadcast">
+      <view class="mi-left"><text class="mi-emoji">📢</text><text class="mi-name">全局公告</text></view>
+      <text class="arrow">›</text>
+    </view>
+    <view class="menu-item" bindtap="go" data-page="admin-venues">
+      <view class="mi-left"><text class="mi-emoji">🏟</text><text class="mi-name">找场地·预订平台排布</text></view>
+      <text class="arrow">›</text>
+    </view>
+  </view>
+
+  <view class="footer-tip">所有管理操作均记录在案，请谨慎使用。</view>
+</view>
