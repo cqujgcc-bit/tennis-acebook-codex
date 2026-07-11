@@ -76,9 +76,11 @@ Page({
         var isAA = a.feeMode === 'aa';
         var isPast = startTs > 0 && startTs <= now;
         var isCreator = a.creatorId === that.data.myUserId;
+        var isCancelled = a.status === "cancelled";
         // 报名墙
         var wallInfo = that.prepareSignupWall(a, that.data.myUserId);
         var item = Object.assign({}, a, {
+          isCancelled: isCancelled,
           dateStr: dateStr,
           timeStr: timeStr,
           isAA: isAA,
@@ -90,8 +92,10 @@ Page({
           signupWall: wallInfo.wall,
           signupHidden: wallInfo.hiddenCount,
         });
-        // 已结束且已结算 → 历史；其余 → 进行中/待开始
-        if (isPast && (a.settleStatus === 'settled' || a.settleStatus === 'settling')) {
+        // 已取消 → 历史；已结束且已结算 → 历史；其余 → 进行中/待开始
+        if (isCancelled) {
+          history.push(item);
+        } else if (isPast && (a.settleStatus === 'settled' || a.settleStatus === 'settling')) {
           history.push(item);
         } else {
           active.push(item);

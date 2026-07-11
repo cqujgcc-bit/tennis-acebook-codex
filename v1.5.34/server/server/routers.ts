@@ -5394,6 +5394,7 @@ export const appRouter = router({
         const [activity] = await dbInstance.select().from(circleActivities)
           .where(eq(circleActivities.id, input.activityId)).limit(1);
         if (!activity) throw new TRPCError({ code: "NOT_FOUND" });
+        if (activity.status === "cancelled") throw new TRPCError({ code: "BAD_REQUEST", message: "该活动已取消，无法报名" });
         const existing = await dbInstance.select().from(circleActivitySignups)
           .where(and(eq(circleActivitySignups.activityId, input.activityId), eq(circleActivitySignups.userId, ctx.user.id))).limit(1);
         if (existing.length > 0) {

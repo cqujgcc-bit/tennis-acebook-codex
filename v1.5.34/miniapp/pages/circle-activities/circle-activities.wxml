@@ -5,12 +5,13 @@
   <block wx:elif="{{activities.length > 0}}">
     <view class="list">
       <view class="section-label">📌 近期活动</view>
-      <view wx:for="{{activities}}" wx:key="id" class="card">
+      <view wx:for="{{activities}}" wx:key="id" class="card {{item.isCancelled ? 'card-cancelled' : ''}}" wx:if="{{!item.isCancelled}}">
         <view class="card-head">
           <text class="title">{{item.title}}</text>
           <view class="tags">
             <text class="tag {{item.isAA ? 'tag-aa' : 'tag-free'}}">{{item.feeLabel}}</text>
-            <text wx:if="{{item.settleLabel}}" class="tag tag-settle">{{item.settleLabel}}</text>
+            <text wx:if="{{item.isCancelled}}" class="tag tag-cancelled">已取消</text>
+            <text wx:elif="{{item.settleLabel}}" class="tag tag-settle">{{item.settleLabel}}</text>
           </view>
         </view>
 
@@ -24,7 +25,7 @@
         <view wx:if="{{item.description}}" class="desc">{{item.description}}</view>
 
         <!-- 报名墙：头像+名字+标记 -->
-        <view class="signup-wall" wx:if="{{item.signupWall.length > 0}}">
+        <view class="signup-wall" wx:if="{{!item.isCancelled && item.signupWall.length > 0}}">
           <view wx:for="{{item.signupWall}}" wx:key="userId" class="sw-item">
             <view class="sw-av-wrap">
               <image class="sw-av" src="{{item.avatar || '/images/default-avatar.png'}}" mode="aspectFill" />
@@ -37,9 +38,9 @@
             <view class="sw-av-wrap"><text class="sw-more-text">+{{item.signupHidden}}</text></view>
           </view>
         </view>
-        <view wx:else class="signup-empty">还没有人报名，快来占位 🎾</view>
+        <view wx:elif="{{!item.isCancelled}}" class="signup-empty">还没有人报名，快来占位 🎾</view>
 
-        <view class="actions">
+        <view wx:if="{{!item.isCancelled}}" class="actions">
           <!-- 报名/取消 -->
           <button wx:if="{{item.settleStatus !== 'settled'}}" class="btn {{item.isSigned ? 'btn-ghost' : 'btn-primary'}}"
             data-id="{{item.id}}" data-signed="{{item.isSigned}}" bindtap="onToggleSignup">
@@ -50,7 +51,7 @@
             class="btn btn-warn" data-id="{{item.id}}" bindtap="onSettle">
             {{item.settleStatus === 'settling' ? '查看/补结算' : '发起结算'}}
           </button>
-          <!-- 取消活动（仅发起人，未结算） -->
+          <!-- 取消活动（仅发起人，未结算，未取消） -->
           <button wx:elif="{{item.isCreator && item.settleStatus !== 'settled' && item.settleStatus !== 'settling'}}"
             class="btn btn-del" data-id="{{item.id}}" bindtap="onCancelActivity">取消活动</button>
           <!-- 账单查看 -->
@@ -69,9 +70,10 @@
       <view wx:if="{{historyShow}}" class="list">
         <view wx:for="{{historyActivities}}" wx:key="id" class="card card-history">
           <view class="card-head">
-            <text class="title">{{item.title}}</text>
+            <text class="title {{item.isCancelled ? 'title-cancelled' : ''}}">{{item.title}}</text>
             <view class="tags">
-              <text class="tag tag-settle">{{item.settleStatus === 'settled' ? '已结算' : '已结束'}}</text>
+              <text wx:if="{{item.isCancelled}}" class="tag tag-cancelled">已取消</text>
+              <text wx:else class="tag tag-settle">{{item.settleStatus === 'settled' ? '已结算' : '已结束'}}</text>
             </view>
           </view>
           <view class="meta">
@@ -80,11 +82,9 @@
             <text class="meta-line">👥 {{item.currentParticipants}}/{{item.maxParticipants}} 人</text>
             <text wx:if="{{item.isAA && item.totalCostYuan}}" class="meta-line">💰 ¥{{item.totalCostYuan}}</text>
           </view>
-          <view class="actions">
+          <view wx:if="{{!item.isCancelled}}" class="actions">
             <button wx:if="{{item.isAA && (item.settleStatus === 'settling' || item.settleStatus === 'settled')}}"
               class="btn btn-ghost" data-id="{{item.id}}" bindtap="onViewBill">查看账单</button>
-            <button wx:elif="{{item.isCreator && item.settleStatus !== 'settled'}}"
-              class="btn btn-del" data-id="{{item.id}}" bindtap="onCancelActivity">取消活动</button>
           </view>
         </view>
       </view>
