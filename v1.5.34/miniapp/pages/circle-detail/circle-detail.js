@@ -704,6 +704,7 @@ Page({
           });
       },
     });
+  },
   // ── 更换圈子头像（仅圈主）──
   onChangeAvatar() {
     var that = this;
