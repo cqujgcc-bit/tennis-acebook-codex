@@ -1,17 +1,16 @@
 <view class="page">
   <view wx:if="{{loading}}" class="loading">加载中...</view>
 
-  <!-- 进行中/待开始的活跃活动 -->
-  <block wx:elif="{{activities.length > 0}}">
-    <view class="list">
+  <!-- 活跃/历史活动 -->
+  <block wx:elif="{{activities.length > 0 || historyActivities.length > 0}}">
+    <view wx:if="{{activities.length > 0}}" class="list">
       <view class="section-label">📌 近期活动</view>
-      <view wx:for="{{activities}}" wx:key="id" class="card {{item.isCancelled ? 'card-cancelled' : ''}}" wx:if="{{!item.isCancelled}}">
+      <view wx:for="{{activities}}" wx:key="id" class="card">
         <view class="card-head">
           <text class="title">{{item.title}}</text>
           <view class="tags">
             <text class="tag {{item.isAA ? 'tag-aa' : 'tag-free'}}">{{item.feeLabel}}</text>
-            <text wx:if="{{item.isCancelled}}" class="tag tag-cancelled">已取消</text>
-            <text wx:elif="{{item.settleLabel}}" class="tag tag-settle">{{item.settleLabel}}</text>
+            <text wx:if="{{item.settleLabel}}" class="tag tag-settle">{{item.settleLabel}}</text>
           </view>
         </view>
 
@@ -25,7 +24,7 @@
         <view wx:if="{{item.description}}" class="desc">{{item.description}}</view>
 
         <!-- 报名墙：头像+名字+标记 -->
-        <view class="signup-wall" wx:if="{{!item.isCancelled && item.signupWall.length > 0}}">
+        <view class="signup-wall" wx:if="{{item.signupWall.length > 0}}">
           <view wx:for="{{item.signupWall}}" wx:key="userId" class="sw-item">
             <view class="sw-av-wrap">
               <image class="sw-av" src="{{item.avatar || '/images/default-avatar.png'}}" mode="aspectFill" />
@@ -38,9 +37,9 @@
             <view class="sw-av-wrap"><text class="sw-more-text">+{{item.signupHidden}}</text></view>
           </view>
         </view>
-        <view wx:elif="{{!item.isCancelled}}" class="signup-empty">还没有人报名，快来占位 🎾</view>
+        <view wx:else class="signup-empty">还没有人报名，快来占位 🎾</view>
 
-        <view wx:if="{{!item.isCancelled}}" class="actions">
+        <view class="actions">
           <!-- 报名/取消 -->
           <button wx:if="{{item.settleStatus !== 'settled'}}" class="btn {{item.isSigned ? 'btn-ghost' : 'btn-primary'}}"
             data-id="{{item.id}}" data-signed="{{item.isSigned}}" bindtap="onToggleSignup">
@@ -61,7 +60,7 @@
       </view>
     </view>
 
-    <!-- 历史活动 -->
+    <!-- 历史/已取消活动 -->
     <view wx:if="{{historyActivities.length > 0}}" class="history-section">
       <view class="section-label {{historyShow ? 'section-open' : ''}}" bindtap="toggleHistory">
         📂 历史活动（{{historyActivities.length}}）
@@ -82,7 +81,7 @@
             <text class="meta-line">👥 {{item.currentParticipants}}/{{item.maxParticipants}} 人</text>
             <text wx:if="{{item.isAA && item.totalCostYuan}}" class="meta-line">💰 ¥{{item.totalCostYuan}}</text>
           </view>
-          <view wx:if="{{!item.isCancelled}}" class="actions">
+          <view class="actions">
             <button wx:if="{{item.isAA && (item.settleStatus === 'settling' || item.settleStatus === 'settled')}}"
               class="btn btn-ghost" data-id="{{item.id}}" bindtap="onViewBill">查看账单</button>
           </view>
