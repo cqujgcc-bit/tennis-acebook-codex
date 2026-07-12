@@ -208,3 +208,12 @@ page { background: #F4F6F5; }
 /* 历史卡片弱化 */
 .card-history { opacity: 0.7; }
 .history-section { margin-bottom: 8rpx; }
+
+/* 圈子详情大头像图片 */
+.circle-avatar-lg-img {
+  width: 128rpx; height: 128rpx;
+  border-radius: 50%;
+  flex-shrink: 0;
+  object-fit: cover;
+  border: 4rpx solid rgba(255,255,255,0.3);
+}

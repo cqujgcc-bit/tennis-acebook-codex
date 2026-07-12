@@ -3207,7 +3207,23 @@ export const appRouter = router({
             gt(matchMessages.id, input.lastReadId),
           ));
         return { count: rows.length };
+ 
+    // ── 更新圈子头像 ──
+    updateAvatar: protectedProcedure
+      .input(z.object({ circleId: z.number(), avatarUrl: z.string() }))
+      .mutation(async ({ ctx, input }) => {
+        const dbInstance = await db.getDb();
+        if (!dbInstance) throw new TRPCError({ code: "INTERNAL_SERVER_ERROR" });
+        const { circles, circleMembers } = await import("../drizzle/schema");
+        const { eq, and } = await import("drizzle-orm");
+        const [membership] = await dbInstance.select().from(circleMembers)
+          .where(and(eq(circleMembers.circleId, input.circleId), eq(circleMembers.userId, ctx.user.id))).limit(1);
+        if (!membership) throw new TRPCError({ code: "FORBIDDEN", message: "您不是该圈子的成员" });
+        if (membership.role !== 'owner') throw new TRPCError({ code: "FORBIDDEN", message: "仅圈主可更换头像" });
+        await dbInstance.update(circles).set({ avatar: input.avatarUrl }).where(eq(circles.id, input.circleId));
+        return { success: true };
       }),
+     }),
   }),
 
   // ─── Lesson Packages (Student side) ───────────────────────────────────────────────────────

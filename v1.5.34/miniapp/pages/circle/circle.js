@@ -40,6 +40,7 @@ Page({
           var extra = mc > 5 ? mc - 5 : 0;
           return {
             id: c.id,
+            avatar: c.avatar || '',
             name: c.name,
             description: c.description || '这个圈子还没有简介',
             memberCount: mc,

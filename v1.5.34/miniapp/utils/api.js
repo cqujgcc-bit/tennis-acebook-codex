@@ -138,6 +138,7 @@ const api = {
     confirmActivityPayment: (orderId, activityId) => mutation('circle.confirmActivityPayment', { orderId, activityId: Number(activityId) }),
     // ── 解散圈子（圈主，需输入圈名确认，物理删除）──
     dismissCircle: (circleId, confirmName) => mutation('circle.dismissCircle', { circleId: Number(circleId), confirmName: confirmName }),
+    updateAvatar: (circleId, avatarUrl) => mutation('circle.updateAvatar', { circleId: Number(circleId), avatarUrl }),
   },
 
   // ─── 我的 / 用户 ────────────────────────────────────────

@@ -495,7 +495,20 @@ Page({
   },
 
   // ─── 设置 / 编辑说明 / 转让 / 退出 ───
-  openSettings() { this.setData({ showSettings: true }); },
+  openSettings() {
+    var that = this;
+    if (this.data.myRole === 'owner') {
+      wx.showActionSheet({
+        itemList: ['圈子管理', '更换头像'],
+        success: function (res) {
+          if (res.tapIndex === 0) that.setData({ showSettings: true });
+          else if (res.tapIndex === 1) that.onChangeAvatar();
+        }
+      });
+    } else {
+      this.setData({ showSettings: true });
+    }
+  },
   closeSettings() { this.setData({ showSettings: false }); },
 
   // ── 入圈申请审核（仅圈主/管理员）──
@@ -691,5 +704,30 @@ Page({
           });
       },
     });
+
+
+  // ── 更换圈子头像（仅圈主）──
+  onChangeAvatar() {
+    var that = this;
+    wx.chooseImage({
+      count: 1,
+      sizeType: ['compressed'],
+      sourceType: ['album', 'camera'],
+      success: function (res) {
+        var filePath = res.tempFilePaths[0];
+        wx.showLoading({ title: '上传中', mask: true });
+        api.uploadFile(filePath).then(function (url) {
+          return api.circle.updateAvatar(that.circleId, url);
+        }).then(function () {
+          wx.hideLoading();
+          wx.showToast({ title: '头像已更换', icon: 'success' });
+          that.loadCircleDetail();
+        }).catch(function (err) {
+          wx.hideLoading();
+          wx.showToast({ title: (err && err.message) || '上传失败', icon: 'none' });
+        });
+      }
+    });
+  },
   },
 });

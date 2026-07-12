@@ -3,7 +3,8 @@
   <view class="hero">
     <view class="hero-gear" bindtap="openSettings">⚙️</view>
     <view class="hero-top">
-      <view class="circle-avatar-lg">{{circle.name[0]}}</view>
+      <image wx:if="{{circle.avatar}}" class="circle-avatar-lg-img" src="{{circle.avatar}}" mode="aspectFill" />
+      <view wx:else class="circle-avatar-lg">{{circle.name[0]}}</view>
       <view class="hero-main">
         <view class="hero-name">{{circle.name}}</view>
         <view class="hero-desc">{{circle.description}}</view>

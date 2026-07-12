@@ -30,7 +30,8 @@
       <view class="card-accent"></view>
 
       <view class="card-top">
-        <view class="circle-avatar">{{item.name[0]}}</view>
+        <image wx:if="{{item.avatar}}" class="circle-avatar-img" src="{{item.avatar}}" mode="aspectFill" />
+        <view wx:else class="circle-avatar">{{item.name[0]}}</view>
         <view class="circle-info">
           <view class="circle-name-row">
             <text class="circle-name">{{item.name}}</text>

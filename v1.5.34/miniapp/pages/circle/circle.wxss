@@ -227,3 +227,12 @@ page { background: #EEF2F0; }
 .menu-mask {
   animation: menu-fade-in 0.2s ease-out;
 }
+
+/* 圈子头像图片 */
+.circle-avatar-img {
+  width: 88rpx; height: 88rpx;
+  border-radius: 50%;
+  flex-shrink: 0;
+  object-fit: cover;
+  border: 2rpx solid #E8ECF0;
+}
