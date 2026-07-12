@@ -5198,7 +5198,7 @@ export const appRouter = router({
         const dbInstance = await db.getDb();
         if (!dbInstance) return [];
         const { circleCheckins, users } = await import("../drizzle/schema");
-        const { eq, desc } = await import("drizzle-orm");
+        const { eq, ne, and, desc } = await import("drizzle-orm");
         const rows = await dbInstance.select({
           id: circleCheckins.id,
           userId: circleCheckins.userId,
@@ -5328,7 +5328,7 @@ export const appRouter = router({
         const dbInstance = await db.getDb();
         if (!dbInstance) return [];
         const { circleActivities, circleActivitySignups, users } = await import("../drizzle/schema");
-        const { eq, desc } = await import("drizzle-orm");
+        const { eq, ne, and, desc } = await import("drizzle-orm");
         const activities = await dbInstance.select({
           id: circleActivities.id,
           title: circleActivities.title,
@@ -5349,7 +5349,7 @@ export const appRouter = router({
           creatorAvatar: users.avatar,
         }).from(circleActivities)
           .leftJoin(users, eq(circleActivities.creatorId, users.id))
-          .where(eq(circleActivities.circleId, input.circleId))
+          .where(and(ne(circleActivities.status, "cancelled"), eq(circleActivities.circleId, input.circleId)))
           .orderBy(desc(circleActivities.activityDate))
           .limit(20);
         const mySignups = await dbInstance.select({ activityId: circleActivitySignups.activityId })
@@ -5699,7 +5699,7 @@ export const appRouter = router({
       const dbInstance = await db.getDb();
       if (!dbInstance) return [];
       const { circleJoinRequests } = await import("../drizzle/schema");
-      const { eq, desc } = await import("drizzle-orm");
+      const { eq, ne, and, desc } = await import("drizzle-orm");
       return await dbInstance.select().from(circleJoinRequests)
         .where(eq(circleJoinRequests.userId, ctx.user.id))
         .orderBy(desc(circleJoinRequests.createdAt)).limit(50);
@@ -5889,12 +5889,12 @@ export const appRouter = router({
         }
         // 物理删除：活动报名→活动→模板→动态→签到→入圈申请→成员→圈子本身
         const activities = await dbInstance.select({ id: circleActivities.id }).from(circleActivities)
-          .where(eq(circleActivities.circleId, input.circleId));
+          .where(and(ne(circleActivities.status, "cancelled"), eq(circleActivities.circleId, input.circleId)));
         if (activities.length > 0) {
           await dbInstance.delete(circleActivitySignups)
             .where(inArray(circleActivitySignups.activityId, activities.map(a => a.id)));
         }
-        await dbInstance.delete(circleActivities).where(eq(circleActivities.circleId, input.circleId));
+        await dbInstance.delete(circleActivities).where(and(ne(circleActivities.status, "cancelled"), eq(circleActivities.circleId, input.circleId)));
         await dbInstance.delete(activityTemplates).where(eq(activityTemplates.circleId, input.circleId));
         // 先清理帖子的点赞与评论，再删帖子
         const posts = await dbInstance.select({ id: circlePosts.id }).from(circlePosts)
@@ -6237,7 +6237,7 @@ export const appRouter = router({
     // 获取所有上线合作场馆列表
     list: publicProcedure.query(async () => {
       const { partnerVenues } = await import("../drizzle/schema");
-      const { eq, desc } = await import("drizzle-orm");
+      const { eq, ne, and, desc } = await import("drizzle-orm");
       const dbInstance = await db.getDb();
       if (!dbInstance) throw new TRPCError({ code: 'INTERNAL_SERVER_ERROR' });
       return dbInstance.select().from(partnerVenues)
