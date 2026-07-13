@@ -224,9 +224,9 @@ Page({
       .then(function (list) {
         var now = new Date();
         var all = (list || []).map(function (m) {
-          var isExpired = m.status === 'open' && isDatePassed(m.matchDate, m.startTime);
-          var isActive = m.status === 'open' && !isExpired;
-          var isHistory = isExpired || m.status === 'completed' || m.status === 'cancelled' || m.status === 'full';
+          var isDatePast = isDatePassed(m.matchDate, m.startTime);
+          var isActive = m.status === 'open' || m.status === 'full';
+          var isHistory = m.status === 'completed' || m.status === 'cancelled';
           return {
             id: m.id,
             title: m.title || '网球局',
@@ -236,13 +236,12 @@ Page({
             levelRequired: m.levelRequired || '',
             current: m.currentParticipants || 0,
             max: m.maxParticipants || 0,
-            statusText: isActive ? '征集中' : (isExpired ? '已结束' : (m.status === 'full' ? '已满员' : (m.status === 'completed' ? '已结束' : '已取消'))),
+            statusText: m.status === 'full' ? '已满员' : (m.status === 'open' ? (isDatePast ? '⏳ 待确认' : '征集中') : (m.status === 'completed' ? '已结束' : '已取消')),
             isActive: isActive,
             isHistory: isHistory,
             sortKey: (m.matchDate || '') + ' ' + (m.startTime || ''),
           };
         });
-        // 进行中（open且未过期），历史（已过期/completed/cancelled/full）
         var active = all.filter(function (m) { return !m.isHistory; });
         var history = all.filter(function (m) { return m.isHistory; });
         active.sort(function (a, b) { return a.sortKey.localeCompare(b.sortKey); });
