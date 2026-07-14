@@ -26,8 +26,8 @@ function decorate(m, now) {
   var stateText = '招募中', stateClass = 'st-open';
   if (status === 'cancelled') { stateText = '已取消'; stateClass = 'st-cancel'; }
   else if (status === 'completed') { stateText = '已完成'; stateClass = 'st-done'; }
-  else if (ended) { stateText = '已结束'; stateClass = 'st-ended'; }
   else if (status === 'full') { stateText = '已满员'; stateClass = 'st-full'; }
+  else if (ended) { stateText = '⏳ 待确认'; stateClass = 'st-ended'; }
   var week = '';
   var d0 = parseDateTime(m.matchDate, '00:00');
   if (d0) week = WEEK[d0.getDay()] || '';
@@ -89,8 +89,6 @@ Page({
   // 判断球局是否属于"进行中"（未过期且非完成/取消）
   isActiveMatch: function (g) {
     if (g.status === 'completed' || g.status === 'cancelled') return false;
-    // 已结束（时间已过但还没 completed/cancelled）→ 历史
-    if (g.stateText === '已结束') return false;
     return true;
   },
 
