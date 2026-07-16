@@ -6438,7 +6438,7 @@ export const appRouter = router({
       }),
 
     // ── 初始化管理员（设置当前用户为管理员）──
-    claimAdmin: adminProcedure
+    claimAdmin: protectedProcedure
       .mutation(async ({ ctx }) => {
         const dbInstance = await db.getDb();
         if (!dbInstance) throw new TRPCError({ code: "INTERNAL_SERVER_ERROR" });
