@@ -32,7 +32,13 @@
 <view class="profile-mask" wx:if="{{showProfile}}">
   <view class="profile-sheet">
     <view class="ps-title">完善个人资料</view>
-    <view class="ps-sub">设置头像、性别和网球水平，让球友更快认识你</view>
+    <view class="ps-sub">填写资料，让球友更快认识你</view>
+
+    <!-- 昵称 -->
+    <view class="nickname-row">
+      <text class="nickname-label">昵称</text>
+      <input class="nickname-input" type="nickname" placeholder="你的昵称" value="{{form.nickname}}" bindinput="onNicknameInput" />
+    </view>
 
     <!-- 微信头像授权 -->
     <button class="avatar-btn" open-type="chooseAvatar" bindchooseavatar="onChooseAvatar">

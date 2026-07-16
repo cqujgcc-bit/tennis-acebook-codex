@@ -17,7 +17,7 @@ Page({
     // 完善资料弹层
     showProfile: false,
     saving: false,
-    form: { avatar: '', gender: '', ntrpLevel: '' }, // gender: 'male' | 'female' | '' (保密); ntrpLevel: number | ''
+    form: { nickname: '', avatar: '', gender: '', ntrpLevel: '' }, // gender: 'male' | 'female' | '' (保密); ntrpLevel: number | ''
     ntrpOptions: NTRP_OPTIONS,
   },
 
@@ -71,6 +71,7 @@ Page({
         } else {
           this.setData({
             showProfile: true,
+            'form.nickname': user.name || '',
             'form.avatar': user.avatar || '',
             'form.gender': user.gender || '',
             'form.ntrpLevel': hasNtrp ? Number(user.ntrpLevel) : '',
@@ -86,6 +87,10 @@ Page({
   onChooseAvatar(e) {
     var avatarUrl = (e && e.detail && e.detail.avatarUrl) || '';
     if (avatarUrl) this.setData({ 'form.avatar': avatarUrl });
+  },
+
+  onNicknameInput(e) {
+    this.setData({ 'form.nickname': e.detail.value });
   },
 
   onPickGender(e) {
@@ -108,7 +113,7 @@ Page({
     wx.showLoading({ title: '保存中...' });
 
     var doUpdate = function (avatarUrl) {
-      var payload = { gender: form.gender || null };
+      var payload = { name: form.nickname || null, gender: form.gender || null };
       if (avatarUrl) payload.avatar = avatarUrl;
 
       // 先保存基础资料，再保存网球水平（若已选）
