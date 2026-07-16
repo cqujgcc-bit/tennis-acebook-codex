@@ -1,0 +1,33 @@
+<view class="page">
+  <view class="search-bar">
+    <input class="search-input" placeholder="搜索昵称 / 手机号 / openId" value="{{keyword}}" bindinput="onInput" confirm-type="search" bindconfirm="onSearch" />
+    <view class="search-btn" bindtap="onSearch">搜索</view>
+  </view>
+  <view class="total-tip">共 {{total}} 名用户</view>
+
+  <view class="u-list">
+    <view class="u-card" wx:for="{{list}}" wx:key="id">
+      <view class="u-top">
+        <image class="u-avatar" src="{{item.avatar || '/assets/images/default-avatar.png'}}" mode="aspectFill"></image>
+        <view class="u-info">
+          <view class="u-name-row">
+            <text class="u-name">{{item.name || '未命名'}}</text>
+            <text class="u-role role-{{item.role}}">{{item.roleLabel}}</text>
+            <text class="u-banned" wx:if="{{item.banned}}">已封禁</text>
+          </view>
+          <view class="u-meta">ID {{item.id}}　📱 {{item.phoneText}}</view>
+          <view class="u-credit">信用分 <text class="credit-num {{item.creditText < 60 ? 'low' : ''}}">{{item.creditText}}</text></view>
+        </view>
+      </view>
+      <view class="u-actions">
+        <view class="act-btn" bindtap="onAdjust" data-user="{{item}}">调整信用分</view>
+        <view class="act-btn" bindtap="onWarn" data-user="{{item}}">警告</view>
+        <view class="act-btn {{item.banned ? 'unban' : 'ban'}}" bindtap="onBanToggle" data-user="{{item}}">{{item.banned ? '解封' : '封禁'}}</view>
+      </view>
+    </view>
+  </view>
+
+  <view class="loading-tip" wx:if="{{loading}}">加载中…</view>
+  <view class="nomore" wx:if="{{noMore && list.length > 0}}">没有更多了</view>
+  <view class="empty" wx:if="{{!loading && list.length === 0}}">未找到用户</view>
+</view>

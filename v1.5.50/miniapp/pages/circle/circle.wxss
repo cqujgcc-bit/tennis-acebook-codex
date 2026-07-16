@@ -1,0 +1,238 @@
+page { background: #EEF2F0; }
+.page { padding-bottom: 60rpx; }
+
+/* 顶部标题区 */
+.page-head {
+  position: relative; overflow: hidden;
+  background: linear-gradient(135deg, #0E4A36 0%, #0B3D2E 55%, #082C21 100%);
+  padding: 36rpx 30rpx 40rpx;
+}
+.head-deco {
+  position: absolute; right: -60rpx; top: -60rpx;
+  width: 260rpx; height: 260rpx; border-radius: 50%;
+  background: radial-gradient(circle, rgba(212,255,63,0.18) 0%, rgba(212,255,63,0) 70%);
+}
+.head-title { position: relative; font-size: 40rpx; font-weight: 800; color: #fff; letter-spacing: 1rpx; }
+.head-sub { position: relative; font-size: 25rpx; color: rgba(255,255,255,0.72); margin-top: 12rpx; }
+
+/* 邀请码加入卡片 */
+.join-card {
+  display: flex; align-items: center;
+  margin: 24rpx 32rpx 8rpx; background: #fff;
+  border-radius: 22rpx; padding: 14rpx 14rpx 14rpx 28rpx;
+  box-shadow: 0 8rpx 24rpx rgba(11,61,46,0.10);
+}
+.join-icon { font-size: 34rpx; margin-right: 12rpx; }
+.join-input { flex: 1; height: 72rpx; font-size: 28rpx; color: #1A1A1A; }
+.join-ph { color: #B5BCB8; }
+.join-btn {
+  background: linear-gradient(135deg, #0E4A36, #0B3D2E); color: #D4FF3F;
+  padding: 0 44rpx; height: 72rpx; line-height: 72rpx;
+  border-radius: 16rpx; font-size: 28rpx; font-weight: 700; flex-shrink: 0;
+}
+
+.state-tip { text-align: center; color: #9AA0A6; font-size: 26rpx; padding: 60rpx 0; }
+
+/* 空态 */
+.empty-box {
+  margin: 40rpx 32rpx; background: #fff; border-radius: 28rpx;
+  padding: 70rpx 40rpx; text-align: center;
+  box-shadow: 0 6rpx 20rpx rgba(0,0,0,0.05);
+}
+.empty-emoji { font-size: 80rpx; }
+.empty-title { font-size: 32rpx; font-weight: 700; color: #1A1A1A; margin-top: 20rpx; }
+.empty-desc { font-size: 26rpx; color: #9AA0A6; margin-top: 16rpx; line-height: 1.7; white-space: pre-line; }
+.empty-btn {
+  display: inline-block; margin-top: 36rpx; padding: 22rpx 56rpx;
+  background: #0B3D2E; color: #D4FF3F; border-radius: 999rpx;
+  font-size: 30rpx; font-weight: 700;
+}
+
+/* 圈子卡片 */
+.circle-list { padding: 24rpx 32rpx 0; }
+.circle-card {
+  position: relative; overflow: hidden;
+  background: #fff; border-radius: 26rpx; padding: 30rpx 28rpx 26rpx 36rpx;
+  margin-bottom: 26rpx;
+  box-shadow: 0 8rpx 24rpx rgba(11,61,46,0.08);
+}
+.card-accent {
+  position: absolute; left: 0; top: 0; bottom: 0; width: 8rpx;
+  background: linear-gradient(180deg, #D4FF3F 0%, #14503C 100%);
+}
+.card-top { display: flex; align-items: flex-start; }
+.circle-avatar {
+  width: 96rpx; height: 96rpx; border-radius: 24rpx;
+  background: linear-gradient(135deg, #14503C 0%, #0B3D2E 100%);
+  color: #D4FF3F; display: flex; align-items: center; justify-content: center;
+  font-size: 42rpx; font-weight: 800; flex-shrink: 0;
+  box-shadow: 0 6rpx 16rpx rgba(11,61,46,0.22);
+}
+.circle-info { flex: 1; margin-left: 22rpx; min-width: 0; padding-top: 4rpx; }
+.circle-name-row { display: flex; align-items: center; }
+.circle-name {
+  font-size: 33rpx; font-weight: 700; color: #16211C;
+  max-width: 320rpx; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;
+}
+.role-tag {
+  margin-left: 14rpx; font-size: 20rpx;
+  padding: 4rpx 16rpx; border-radius: 999rpx; font-weight: 700; flex-shrink: 0;
+}
+.role-owner { background: #0B3D2E; color: #D4FF3F; }
+.role-member { background: #EAF3ED; color: #0B3D2E; }
+.circle-desc {
+  display: block; font-size: 25rpx; color: #98A29C; margin-top: 10rpx;
+  overflow: hidden; text-overflow: ellipsis; white-space: nowrap;
+}
+
+/* 卡片更多菜单按钮 */
+.card-more {
+  flex-shrink: 0; width: 56rpx; height: 56rpx; margin: -6rpx -6rpx 0 6rpx;
+  display: flex; flex-direction: column; align-items: center; justify-content: center;
+}
+.card-more .dot {
+  width: 8rpx; height: 8rpx; border-radius: 50%;
+  background: #C2CBC6; margin: 3rpx 0;
+}
+
+.card-bottom {
+  display: flex; align-items: center; justify-content: space-between;
+  margin-top: 26rpx; padding-top: 24rpx; border-top: 2rpx solid #F0F3F1;
+}
+.avatar-wall { display: flex; align-items: center; }
+.wall-avatar {
+  width: 56rpx; height: 56rpx; border-radius: 50%;
+  border: 3rpx solid #fff; margin-left: -16rpx;
+  box-shadow: 0 2rpx 6rpx rgba(0,0,0,0.1);
+}
+.wall-avatar:first-child { margin-left: 0; }
+.wall-letter {
+  background: linear-gradient(135deg, #14503C 0%, #0B3D2E 100%);
+  color: #D4FF3F; display: flex; align-items: center; justify-content: center;
+  font-size: 24rpx; font-weight: 700;
+}
+.wall-extra {
+  background: #EAF3ED; color: #0B3D2E;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 22rpx; font-weight: 700;
+}
+.card-stats { display: flex; align-items: center; }
+.stat-chip {
+  font-size: 22rpx; color: #55635C; margin-left: 14rpx;
+  background: #F1F5F3; padding: 8rpx 18rpx; border-radius: 999rpx;
+}
+.stat-active { color: #B8460A; background: #FDEEE3; font-weight: 600; }
+.stat-idle { color: #9AA0A6; }
+
+/* 创建新圈子 */
+.create-circle {
+  margin: 8rpx 32rpx; text-align: center; padding: 30rpx;
+  background: #fff; border-radius: 22rpx;
+  color: #0B3D2E; font-size: 30rpx; font-weight: 600;
+  border: 2rpx dashed #9DBDB0;
+}
+.create-plus { color: #0B3D2E; font-weight: 800; }
+
+/* 卡片操作菜单 */
+.menu-mask {
+  position: fixed; inset: 0; background: rgba(0,0,0,0.45);
+  z-index: 100; display: flex; align-items: flex-end;
+}
+.menu-sheet {
+  width: 100%; background: #fff;
+  border-top-left-radius: 28rpx; border-top-right-radius: 28rpx;
+  padding: 12rpx 24rpx calc(24rpx + env(safe-area-inset-bottom));
+}
+.menu-head {
+  display: flex; align-items: center; justify-content: center;
+  padding: 26rpx 0 18rpx; border-bottom: 2rpx solid #F0F3F1; margin-bottom: 8rpx;
+}
+.menu-head-name { font-size: 30rpx; font-weight: 700; color: #16211C; max-width: 400rpx; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.menu-head-role { margin-left: 14rpx; font-size: 20rpx; padding: 4rpx 14rpx; border-radius: 999rpx; background: #EAF3ED; color: #0B3D2E; font-weight: 700; }
+.menu-item {
+  display: flex; align-items: center; padding: 30rpx 16rpx;
+  font-size: 30rpx; color: #1A1A1A;
+}
+.menu-item-icon { margin-right: 18rpx; font-size: 34rpx; }
+.menu-item.danger { color: #C2410C; }
+.menu-cancel {
+  margin-top: 12rpx; text-align: center; padding: 28rpx;
+  font-size: 30rpx; color: #6B7570; font-weight: 600;
+  background: #F4F6F5; border-radius: 18rpx;
+}
+
+/* ============================================================
+   v1.5.28 UI 运动风尚升级
+   圈子页增强：卡片入场、活跃色条、统计组件
+   ============================================================ */
+
+/* —— 圈子卡片入场 —— */
+.circle-card {
+  animation: ab-card-enter 0.5s ease-out both;
+}
+.circle-card:nth-child(1) { animation-delay: 0s; }
+.circle-card:nth-child(2) { animation-delay: 0.08s; }
+.circle-card:nth-child(3) { animation-delay: 0.16s; }
+.circle-card:nth-child(4) { animation-delay: 0.24s; }
+.circle-card:nth-child(5) { animation-delay: 0.32s; }
+
+/* —— 活跃统计胶囊增强 —— */
+.stat-chip {
+  transition: transform 0.15s ease;
+}
+.circle-card:active .stat-chip {
+  transform: scale(0.96);
+}
+
+/* —— 邀请码加入按钮悬停态 —— */
+.join-btn:active {
+  transform: scale(0.96);
+  opacity: 0.9;
+}
+
+/* —— 创建圈子增强 —— */
+.create-circle {
+  transition: background 0.2s ease, border-color 0.2s ease;
+}
+.create-circle:active {
+  background: #F4F9F6;
+  border-color: #0B3D2E;
+}
+
+/* —— 卡片色带渐变动画 —— */
+.card-accent {
+  transition: width 0.2s ease;
+}
+.circle-card:active .card-accent {
+  width: 12rpx;
+}
+
+/* —— 圈子头像墙增强 —— */
+.wall-avatar {
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+.circle-card:active .wall-avatar {
+  transform: translateY(-2rpx);
+  box-shadow: 0 4rpx 12rpx rgba(11,61,46,0.18);
+}
+
+/* —— 更多菜单动画 —— */
+.menu-sheet {
+  animation: ab-card-enter 0.3s ease-out;
+}
+@keyframes menu-fade-in {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+.menu-mask {
+  animation: menu-fade-in 0.2s ease-out;
+}
+
+/* 圈子头像图片 */
+.circle-avatar-img {
+  width: 88rpx; height: 88rpx;
+  border-radius: 50%;
+  flex-shrink: 0;
+  object-fit: cover;
+  border: 2rpx solid #E8ECF0;
+}
