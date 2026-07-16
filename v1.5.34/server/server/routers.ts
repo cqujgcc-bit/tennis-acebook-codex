@@ -6436,6 +6436,18 @@ export const appRouter = router({
         await dbInstance.delete(venueAvailableSlots).where(eq(venueAvailableSlots.id, input.id));
         return { success: true };
       }),
+
+    // ── 初始化管理员（设置当前用户为管理员）──
+    claimAdmin: adminProcedure
+      .mutation(async ({ ctx }) => {
+        const dbInstance = await db.getDb();
+        if (!dbInstance) throw new TRPCError({ code: "INTERNAL_SERVER_ERROR" });
+        const { users: usersTable } = await import("../drizzle/schema");
+        const { eq } = await import("drizzle-orm");
+        if (ctx.user.role === "admin") return { success: true, message: "已经是管理员" };
+        await dbInstance.update(usersTable).set({ role: "admin" }).where(eq(usersTable.id, ctx.user.id));
+        return { success: true, message: "管理员权限已开通" };
+      }),
   }),
 });
 export type AppRouter = typeof appRouter;

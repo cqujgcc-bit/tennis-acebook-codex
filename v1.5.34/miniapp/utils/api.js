@@ -185,6 +185,7 @@ const api = {
     // 预订平台排布
     listBookingApps: () => query('admin.listBookingApps'),
     reorderBookingApps: (orders) => mutation('admin.reorderBookingApps', { orders }),
+    claimAdmin: () => mutation('admin.claimAdmin'),
     toggleBookingApp: (id, enabled) => mutation('admin.toggleBookingApp', { id: Number(id), enabled: !!enabled }),
     upsertBookingApp: (data) => mutation('admin.upsertBookingApp', data),
     deleteBookingApp: (id) => mutation('admin.deleteBookingApp', { id: Number(id) }),

@@ -361,5 +361,29 @@ Page({
         }
       },
     });
-  },
+
+  // ── 初始化管理员权限 ──
+  onClaimAdmin() {
+    var that = this;
+    wx.showModal({
+      title: '初始化管理员',
+      content: '确认将当前账号设为超级管理员？之后可在个人中心进入管理后台。',
+      success: function (res) {
+        if (!res.confirm) return;
+        wx.showLoading({ title: '设置中', mask: true });
+        api.admin.claimAdmin().then(function (res) {
+          wx.hideLoading();
+          wx.showToast({ title: (res && res.message) || '设置成功', icon: 'success' });
+          // 刷新页面
+          var info = wx.getStorageSync('userInfo') || {};
+          info.role = 'admin';
+          wx.setStorageSync('userInfo', info);
+          that.setData({ isAdmin: true });
+        }).catch(function (err) {
+          wx.hideLoading();
+          wx.showToast({ title: (err && err.message) || '设置失败', icon: 'none' });
+        });
+      }
+    });
+  },  },
 });
