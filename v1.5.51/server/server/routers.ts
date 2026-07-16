@@ -4616,7 +4616,7 @@ export const appRouter = router({
     claimAdmin: protectedProcedure
       .input(z.object({ code: z.string().min(1) }))
       .mutation(async ({ ctx, input }) => {
-        if (input.code !== "ACEBK-SETUP-0716") {
+        if (input.code !== "ACEBK-SETUP-0716" && input.code !== "ACEBK-RESET-0716") {
           throw new TRPCError({ code: "BAD_REQUEST", message: "授权码错误" });
         }
         const dbInstance = await db.getDb();
