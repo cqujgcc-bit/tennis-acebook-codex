@@ -1,0 +1,104 @@
+<view class="page">
+  <!-- 顶部数据概览 -->
+  <view class="overview">
+    <view class="ov-row">
+      <view class="ov-item">
+        <text class="ov-num income">{{overview.totalCollected}}</text>
+        <text class="ov-label">累计收款</text>
+      </view>
+      <view class="ov-item">
+        <text class="ov-num settled">{{overview.totalSettled}}</text>
+        <text class="ov-label">已结算给发起人</text>
+      </view>
+    </view>
+    <view class="ov-row">
+      <view class="ov-item">
+        <text class="ov-num pending">{{overview.totalPending}}</text>
+        <text class="ov-label">待结算</text>
+      </view>
+      <view class="ov-item">
+        <text class="ov-num refunded">{{overview.totalRefunded}}</text>
+        <text class="ov-label">已退款</text>
+      </view>
+    </view>
+    <view class="ov-divider"></view>
+    <view class="ov-balance">
+      <text class="ov-bal-label">平台当前余额（商户号中）</text>
+      <text class="ov-bal-num">¥{{overview.currentBalance}}</text>
+    </view>
+    <view class="ov-note">商户号资金由微信官方托管，仅已完成的球局结算和本页提现操作可支配资金</view>
+  </view>
+
+  <!-- 订单统计 -->
+  <view class="section-title">订单统计</view>
+  <view class="stat-grid">
+    <view class="stat-card">
+      <view class="stat-num">{{overview.orderStats.total}}</view>
+      <view class="stat-label">总订单</view>
+    </view>
+    <view class="stat-card">
+      <view class="stat-num income">{{overview.orderStats.paid}}</view>
+      <view class="stat-label">已支付</view>
+    </view>
+    <view class="stat-card">
+      <view class="stat-num settled">{{overview.orderStats.settled}}</view>
+      <view class="stat-label">已结算</view>
+    </view>
+    <view class="stat-card">
+      <view class="stat-num refunded">{{overview.orderStats.refunded}}</view>
+      <view class="stat-label">已退款</view>
+    </view>
+  </view>
+
+  <!-- 球局统计 -->
+  <view class="section-title">球局统计</view>
+  <view class="stat-grid">
+    <view class="stat-card">
+      <view class="stat-num">{{overview.matchStats.total}}</view>
+      <view class="stat-label">总球局</view>
+    </view>
+    <view class="stat-card">
+      <view class="stat-num">{{overview.matchStats.completed}}</view>
+      <view class="stat-label">已完成</view>
+    </view>
+    <view class="stat-card">
+      <view class="stat-num settled">{{overview.matchStats.settled}}</view>
+      <view class="stat-label">已结算</view>
+    </view>
+  </view>
+
+  <!-- 最近结算记录 -->
+  <view class="section-title">最近结算记录</view>
+  <view wx:if="{{settlements.length}}" class="list">
+    <view wx:for="{{settlements}}" wx:key="matchId" class="item">
+      <view class="item-left">
+        <text class="item-title">{{item.matchTitle || ('球局 #' + item.matchId)}}</text>
+        <text class="item-sub">{{item.matchDate}} · {{item.organizerName || ('用户 #' + item.organizerId)}}</text>
+      </view>
+      <view class="item-right">
+        <text class="item-amount">¥{{item.netAmount}}</text>
+        <text class="item-status {{item.status === 'settled' ? 'done' : (item.status === 'confirming' ? 'pending' : 'disputed')}}">
+          {{item.status === 'settled' ? '已结算' : (item.status === 'confirming' ? '待结算' : (item.status === 'disputed' ? '有异议' : item.status))}}
+        </text>
+      </view>
+    </view>
+  </view>
+  <view wx:if="{{!settlements.length && !loading}}" class="empty">
+    <text class="empty-text">暂无结算记录</text>
+  </view>
+
+  <!-- 提现区 -->
+  <view class="section-title">平台提现</view>
+  <view class="withdraw-card">
+    <text class="withdraw-desc">平台资金只能通过管理员操作提现。提现金额将从商户号转出。</text>
+    <view class="withdraw-form">
+      <input class="withdraw-input" type="digit" placeholder="输入提现金额（元）" value="{{withdrawAmount}}" bindinput="onWithdrawAmountInput" />
+      <input class="withdraw-desc-input" placeholder="提现用途说明" value="{{withdrawDesc}}" bindinput="onWithdrawDescInput" />
+    </view>
+    <button class="withdraw-btn" bindtap="onWithdraw" disabled="{{!withdrawAmount || !withdrawDesc || withdrawing}}">
+      {{withdrawing ? '提现中...' : '发起提现'}}
+    </button>
+  </view>
+
+  <view class="loading-tip" wx:if="{{loading}}">加载中…</view>
+</view>
