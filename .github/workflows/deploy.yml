@@ -16,11 +16,15 @@ jobs:
         with:
           fetch-depth: 15
 
-      - name: 🔍 查找最新版本目录
+      - name: 🔍 查找最新版本目录和tag
         id: find_version
         run: |
+          # 用 git tag 获取真实版本号，用 v* 文件夹作为代码路径
+          GIT_TAG=$(git tag --sort=-creatordate | head -1)
           LATEST_VERSION=$(ls -d v* 2>/dev/null | sort -V | tail -n 1)
           echo "version=$LATEST_VERSION" >> "$GITHUB_OUTPUT"
+          echo "git_tag=$GIT_TAG" >> "$GITHUB_OUTPUT"
+          echo "✅ tag=$GIT_TAG  dir=$LATEST_VERSION
 
       - name: 🔐 测试 SSH 连接
         uses: appleboy/ssh-action@v1.2.0
@@ -69,11 +73,15 @@ jobs:
         with:
           fetch-depth: 15
 
-      - name: 🔍 查找最新版本目录
+      - name: 🔍 查找最新版本目录和tag
         id: find_version
         run: |
+          # 用 git tag 获取真实版本号，用 v* 文件夹作为代码路径
+          GIT_TAG=$(git tag --sort=-creatordate | head -1)
           LATEST_VERSION=$(ls -d v* 2>/dev/null | sort -V | tail -n 1)
           echo "version=$LATEST_VERSION" >> "$GITHUB_OUTPUT"
+          echo "git_tag=$GIT_TAG" >> "$GITHUB_OUTPUT"
+          echo "✅ tag=$GIT_TAG  dir=$LATEST_VERSION
 
       - name: 🔑 写入微信私钥
         run: |
@@ -92,7 +100,7 @@ jobs:
           cd /tmp/wx-upload
           node -e "
             const ci = require('miniprogram-ci');
-            const version = process.env.VERSION.replace(/^v/, '');
+            const version = (process.env.GIT_TAG || process.env.VERSION).replace(/^v/, '');
             const project = new ci.Project({
               appid: 'wx517c76b146302fe5',
               type: 'miniProgram',
@@ -115,4 +123,5 @@ jobs:
           "
         env:
           VERSION: ${{ steps.find_version.outputs.version }}
+          GIT_TAG: ${{ steps.find_version.outputs.git_tag }}
           PROJECT_PATH: ${{ github.workspace }}/${{ steps.find_version.outputs.version }}/miniapp
