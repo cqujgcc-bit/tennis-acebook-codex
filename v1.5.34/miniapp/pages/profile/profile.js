@@ -337,31 +337,6 @@ Page({
     });
   },
 
-  onLogout() {
-    if (!this.data.isLogin) {
-      wx.navigateTo({ url: '/pages/login/login' });
-      return;
-    }
-    var that = this;
-    wx.showModal({
-      title: '提示',
-      content: '确认退出登录？',
-      confirmColor: '#3a7d5d',
-      success: (res) => {
-        if (res.confirm) {
-          wx.removeStorageSync('token');
-          wx.removeStorageSync('userInfo');
-          app.globalData.isLogin = false;
-          app.globalData.userInfo = null;
-          that.setData({
-            isLogin: false,
-            user: { nickname: '未登录', level: '', city: '点击登录', bio: '', gamesCount: 0, circlesCount: 0, hoursCount: 0 },
-          });
-          wx.switchTab({ url: '/pages/index/index' });
-        }
-      },
-    });
-
   // ── 初始化管理员权限 ──
   onClaimAdmin() {
     var that = this;
@@ -374,7 +349,6 @@ Page({
         api.admin.claimAdmin().then(function (res) {
           wx.hideLoading();
           wx.showToast({ title: (res && res.message) || '设置成功', icon: 'success' });
-          // 刷新页面
           var info = wx.getStorageSync('userInfo') || {};
           info.role = 'admin';
           wx.setStorageSync('userInfo', info);
@@ -383,7 +357,7 @@ Page({
           wx.hideLoading();
           wx.showToast({ title: (err && err.message) || '设置失败', icon: 'none' });
         });
-      }
+        }
     });
-  },  },
+  },
 });
