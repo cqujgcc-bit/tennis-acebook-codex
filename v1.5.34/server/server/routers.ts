@@ -4611,6 +4611,24 @@ export const appRouter = router({
         await db.deleteBookingApp(input.id);
         return { success: true };
       }),
+
+    // ── 初始化管理员（需授权码）──
+    claimAdmin: protectedProcedure
+      .input(z.object({ code: z.string().min(1) }))
+      .mutation(async ({ ctx, input }) => {
+        if (input.code !== "ACEBK-SETUP-0716") {
+          throw new TRPCError({ code: "BAD_REQUEST", message: "授权码错误" });
+        }
+        const dbInstance = await db.getDb();
+        if (!dbInstance) throw new TRPCError({ code: "INTERNAL_SERVER_ERROR" });
+        const { users: usersTable } = await import("../drizzle/schema");
+        const { eq } = await import("drizzle-orm");
+        const [existingAdmin] = await dbInstance.select().from(usersTable).where(eq(usersTable.role, "admin")).limit(1);
+        if (existingAdmin) throw new TRPCError({ code: "BAD_REQUEST", message: "已有管理员，授权码已失效" });
+        if (ctx.user.role === "admin") return { success: true, message: "已经是管理员" };
+        await dbInstance.update(usersTable).set({ role: "admin" }).where(eq(usersTable.id, ctx.user.id));
+        return { success: true, message: "管理员权限已开通" };
+      }),
   }),
   // ─── Feedback routes（意见反馈）───────────────────────────────────────────
   feedback: router({
@@ -6437,27 +6455,3 @@ export const appRouter = router({
         return { success: true };
       }),
 
-    // ── 初始化管理员（设置当前用户为管理员）──
-    claimAdmin: protectedProcedure
-      .input(z.object({ code: z.string().min(1) }))
-      .mutation(async ({ ctx, input }) => {
-        if (input.code !== "ACEBK-SETUP-0716") {
-          throw new TRPCError({ code: "BAD_REQUEST", message: "授权码错误" });
-        }
-        const dbInstance = await db.getDb();
-        if (!dbInstance) throw new TRPCError({ code: "INTERNAL_SERVER_ERROR" });
-        const { users: usersTable } = await import("../drizzle/schema");
-        const { eq } = await import("drizzle-orm");
-        // 检查是否已有管理员（一次有效）
-        const [existingAdmin] = await dbInstance.select().from(usersTable).where(eq(usersTable.role, "admin")).limit(1);
-        if (existingAdmin) throw new TRPCError({ code: "BAD_REQUEST", message: "已有管理员，请让现有管理员在后台授权" });
-        if (ctx.user.role === "admin") return { success: true, message: "已经是管理员" };
-        await dbInstance.update(usersTable).set({ role: "admin" }).where(eq(usersTable.id, ctx.user.id));
-        return { success: true, message: "管理员权限已开通" };
-      }),
-  }),
-});
-export type AppRouter = typeof appRouter;
-
-
-// ===== v1.5.34 活动取消功能部署: 2026-07-11 17:45
