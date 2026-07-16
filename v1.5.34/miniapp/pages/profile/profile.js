@@ -337,16 +337,18 @@ Page({
     });
   },
 
-  // ── 初始化管理员权限 ──
+  // ── 授权码激活管理员 ──
   onClaimAdmin() {
     var that = this;
     wx.showModal({
-      title: '初始化管理员',
-      content: '确认将当前账号设为超级管理员？之后可在个人中心进入管理后台。',
+      title: '授权码激活',
+      content: '请输入授权码激活管理员权限（每套代码仅一次有效）',
+      editable: true,
+      placeholderText: '请输入授权码',
       success: function (res) {
         if (!res.confirm) return;
-        wx.showLoading({ title: '设置中', mask: true });
-        api.admin.claimAdmin().then(function (res) {
+        wx.showLoading({ title: '验证中', mask: true });
+        api.admin.claimAdmin(res.content).then(function (res) {
           wx.hideLoading();
           wx.showToast({ title: (res && res.message) || '设置成功', icon: 'success' });
           var info = wx.getStorageSync('userInfo') || {};
@@ -355,7 +357,7 @@ Page({
           that.setData({ isAdmin: true });
         }).catch(function (err) {
           wx.hideLoading();
-          wx.showToast({ title: (err && err.message) || '设置失败', icon: 'none' });
+          wx.showToast({ title: (err && err.message) || '验证失败', icon: 'none' });
         });
         }
     });

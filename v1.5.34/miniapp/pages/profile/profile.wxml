@@ -69,7 +69,7 @@
   </view>
   <view class="menu-group" wx:elif="{{isLogin}}">
     <view class="menu-item" bindtap="onClaimAdmin">
-      <text class="menu-ico">🔑</text><text class="menu-text">初始化管理员权限</text><text class="menu-arrow">›</text>
+      <text class="menu-ico">🔑</text><text class="menu-text">授权码激活管理员</text><text class="menu-arrow">›</text>
     </view>
   </view>
 
