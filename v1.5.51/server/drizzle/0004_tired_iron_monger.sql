@@ -1,0 +1,2 @@
+ALTER TABLE `coach_profiles` ADD `verificationStatus` enum('draft','pending','approved','rejected') DEFAULT 'draft' NOT NULL;--> statement-breakpoint
+ALTER TABLE `coach_profiles` ADD `reviewNote` text;
