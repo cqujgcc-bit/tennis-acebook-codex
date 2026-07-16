@@ -1,7 +1,7 @@
 .page { min-height: 100vh; background: #f4f6f5; padding-bottom: 40rpx; }
-.search-bar { display: flex; padding: 20rpx 12rpx; background: #fff; position: sticky; top: 0; z-index: 5; }
-.search-input { flex: 1; background: #f2f4f3; border-radius: 30rpx; padding: 22rpx 28rpx; font-size: 28rpx; }
-.search-btn { padding: 22rpx 40rpx; margin-left: 10rpx; white-space: nowrap; background: #0B3D2E; color: #fff; border-radius: 30rpx; font-size: 28rpx; }
+.search-bar { display: flex; align-items: center; padding: 12rpx 12rpx; background: #fff; position: sticky; top: 0; z-index: 5; }
+.search-input { flex: 1; height: 68rpx; background: #f2f4f3; border-radius: 30rpx; padding: 0 24rpx; font-size: 26rpx; line-height: 68rpx; }
+.search-btn { height: 68rpx; line-height: 68rpx; padding: 0 32rpx; margin-left: 10rpx; white-space: nowrap; background: #0B3D2E; color: #fff; border-radius: 30rpx; font-size: 26rpx; }
 .total-tip { font-size: 24rpx; color: #888; padding: 16rpx 30rpx; }
 
 .u-list { padding: 0 24rpx; }
