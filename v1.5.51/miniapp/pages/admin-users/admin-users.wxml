@@ -22,7 +22,9 @@
       <view class="u-actions">
         <view class="act-btn" bindtap="onAdjust" data-user="{{item}}">调整信用分</view>
         <view class="act-btn" bindtap="onWarn" data-user="{{item}}">警告</view>
-        <view class="act-btn {{item.banned ? 'unban' : 'ban'}}" bindtap="onBanToggle" data-user="{{item}}">{{item.banned ? '解封' : '封禁'}}</view>
+        <view wx:if="{{item.role !== 'admin'}}" class="act-btn" bindtap="onGrantAdmin" data-user="{{item}}">设为管理员</view>
+      <view wx:elif="{{item.id !== currentUserId}}" class="act-btn" bindtap="onRevokeAdmin" data-user="{{item}}">撤销管理</view>
+      <view class="act-btn {{item.banned ? 'unban' : 'ban'}}" bindtap="onBanToggle" data-user="{{item}}">{{item.banned ? '解封' : '封禁'}}</view>
       </view>
     </view>
   </view>

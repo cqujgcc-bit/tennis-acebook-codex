@@ -19,6 +19,7 @@ Page({
       wx.showModal({ title: '无权访问', content: '仅管理员可用', showCancel: false, success: function () { wx.navigateBack(); } });
       return;
     }
+    this.setData({ currentUserId: info.id });
     this.load(true);
   },
 
@@ -152,6 +153,50 @@ Page({
         if (!reason) { wx.showToast({ title: '内容不能为空', icon: 'none' }); return; }
         api.admin.warnUser(u.id, reason).then(function () { wx.showToast({ title: '已发送警告', icon: 'success' }); })
           .catch(function (err) { wx.showToast({ title: (err && err.message) || '操作失败', icon: 'none' }); });
+      },
+    });
+  },
+
+  // 设为管理员
+  onGrantAdmin(e) {
+    var u = e.currentTarget.dataset.user;
+    var that = this;
+    wx.showModal({
+      title: '设为管理员',
+      content: '确认将「' + (u.name || u.id) + '」设为管理员？',
+      success: function (res) {
+        if (!res.confirm) return;
+        wx.showLoading({ title: '授权中...' });
+        api.admin.grantAdmin(u.id).then(function () {
+          wx.hideLoading();
+          wx.showToast({ title: '已设为管理员', icon: 'success' });
+          that.load(true);
+        }).catch(function (err) {
+          wx.hideLoading();
+          wx.showToast({ title: (err && err.message) || '操作失败', icon: 'none' });
+        });
+      },
+    });
+  },
+
+  // 撤销管理员
+  onRevokeAdmin(e) {
+    var u = e.currentTarget.dataset.user;
+    var that = this;
+    wx.showModal({
+      title: '撤销管理员',
+      content: '确认撤销「' + (u.name || u.id) + '」的管理员权限？',
+      success: function (res) {
+        if (!res.confirm) return;
+        wx.showLoading({ title: '撤销中...' });
+        api.admin.revokeAdmin(u.id).then(function () {
+          wx.hideLoading();
+          wx.showToast({ title: '已撤销管理员', icon: 'success' });
+          that.load(true);
+        }).catch(function (err) {
+          wx.hideLoading();
+          wx.showToast({ title: (err && err.message) || '操作失败', icon: 'none' });
+        });
       },
     });
   },

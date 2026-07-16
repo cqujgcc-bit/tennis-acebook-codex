@@ -4414,8 +4414,8 @@ export const appRouter = router({
     grantAdmin: protectedProcedure
       .input(z.object({ userId: z.number() }))
       .mutation(async ({ ctx, input }) => {
-        if (ctx.user.openId !== ENV.ownerOpenId) {
-          throw new TRPCError({ code: "FORBIDDEN", message: "只有超级管理员可以授权管理员权限" });
+        if (ctx.user.role !== "admin") {
+          throw new TRPCError({ code: "FORBIDDEN", message: "只有管理员可以授权管理员权限" });
         }
         const targetUser = await db.getUserById(input.userId);
         if (!targetUser) throw new TRPCError({ code: "NOT_FOUND", message: "用户不存在" });
@@ -4433,8 +4433,8 @@ export const appRouter = router({
     revokeAdmin: protectedProcedure
       .input(z.object({ userId: z.number() }))
       .mutation(async ({ ctx, input }) => {
-        if (ctx.user.openId !== ENV.ownerOpenId) {
-          throw new TRPCError({ code: "FORBIDDEN", message: "只有超级管理员可以撤销管理员权限" });
+        if (ctx.user.role !== "admin") {
+          throw new TRPCError({ code: "FORBIDDEN", message: "只有管理员可以撤销管理员权限" });
         }
         if (ctx.user.id === input.userId) {
           throw new TRPCError({ code: "BAD_REQUEST", message: "不能撤销自己的管理员权限" });

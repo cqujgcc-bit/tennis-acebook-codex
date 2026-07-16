@@ -189,6 +189,8 @@ const api = {
     toggleBookingApp: (id, enabled) => mutation('admin.toggleBookingApp', { id: Number(id), enabled: !!enabled }),
     upsertBookingApp: (data) => mutation('admin.upsertBookingApp', data),
     deleteBookingApp: (id) => mutation('admin.deleteBookingApp', { id: Number(id) }),
+    grantAdmin: (userId) => mutation('admin.grantAdmin', { userId: Number(userId) }),
+    revokeAdmin: (userId) => mutation('admin.revokeAdmin', { userId: Number(userId) }),
   },
 
   // ─── 约课 / 教练 ────────────────────────────────────────
