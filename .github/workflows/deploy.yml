@@ -15,17 +15,13 @@ jobs:
         uses: actions/checkout@v4
         with:
           fetch-depth: 0
-          fetch-tags: true
 
-      - name: 🔍 查找最新版本目录和tag
+      - name: 🔍 查找版本号
         id: find_version
         run: |
-          # 用 git tag 获取真实版本号，用 v* 文件夹作为代码路径
-          GIT_TAG=$(git tag --sort=-creatordate | head -1)
-          LATEST_VERSION=$(ls -d v* 2>/dev/null | sort -V | tail -n 1)
-          echo "version=$LATEST_VERSION" >> "$GITHUB_OUTPUT"
-          echo "git_tag=$GIT_TAG" >> "$GITHUB_OUTPUT"
-          echo "✅ tag=$GIT_TAG  dir=$LATEST_VERSION
+          VERSION_DIR=$(ls -d v* 2>/dev/null | sort -V | tail -n 1 || echo "v1.5.34")
+          echo "version=$VERSION_DIR" >> "$GITHUB_OUTPUT"
+          echo "✅ dir=$VERSION_DIR"
 
       - name: 🔐 测试 SSH 连接
         uses: appleboy/ssh-action@v1.2.0
@@ -73,17 +69,17 @@ jobs:
         uses: actions/checkout@v4
         with:
           fetch-depth: 0
-          fetch-tags: true
 
-      - name: 🔍 查找最新版本目录和tag
+      - name: 🔍 查找版本号
         id: find_version
         run: |
-          # 用 git tag 获取真实版本号，用 v* 文件夹作为代码路径
-          GIT_TAG=$(git tag --sort=-creatordate | head -1)
-          LATEST_VERSION=$(ls -d v* 2>/dev/null | sort -V | tail -n 1)
-          echo "version=$LATEST_VERSION" >> "$GITHUB_OUTPUT"
-          echo "git_tag=$GIT_TAG" >> "$GITHUB_OUTPUT"
-          echo "✅ tag=$GIT_TAG  dir=$LATEST_VERSION
+          VERSION_DIR=$(ls -d v* 2>/dev/null | sort -V | tail -n 1 || echo "v1.5.34")
+          # 从最近一条 commit message 提取显示版本号
+          MSG=$(git log -1 --format=%s)
+          SHOW_VER=$(echo "$MSG" | grep -oE 'v[0-9]+\.[0-9]+\.[0-9]+' | head -1 || echo "v1.5.42")
+          echo "version=$VERSION_DIR" >> "$GITHUB_OUTPUT"
+          echo "show_version=$SHOW_VER" >> "$GITHUB_OUTPUT"
+          echo "✅ dir=$VERSION_DIR show=$SHOW_VER"
 
       - name: 🔑 写入微信私钥
         run: |
@@ -102,7 +98,7 @@ jobs:
           cd /tmp/wx-upload
           node -e "
             const ci = require('miniprogram-ci');
-            const version = (process.env.GIT_TAG || process.env.VERSION).replace(/^v/, '');
+            const version = (process.env.SHOW_VERSION || process.env.VERSION).replace(/^v/, '');
             const project = new ci.Project({
               appid: 'wx517c76b146302fe5',
               type: 'miniProgram',
@@ -125,5 +121,5 @@ jobs:
           "
         env:
           VERSION: ${{ steps.find_version.outputs.version }}
-          GIT_TAG: ${{ steps.find_version.outputs.git_tag }}
+          SHOW_VERSION: ${{ steps.find_version.outputs.show_version }}
           PROJECT_PATH: ${{ github.workspace }}/${{ steps.find_version.outputs.version }}/miniapp
