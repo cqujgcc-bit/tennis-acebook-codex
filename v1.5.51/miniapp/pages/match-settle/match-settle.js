@@ -163,7 +163,7 @@ Page({
     api.match.confirmComplete(matchId, attendance, organizerAttended).then(function (r) {
       wx.hideLoading();
       that.setData({ submitting: false });
-      wx.showToast({ title: '结算完成', icon: 'success', duration: 2000 });
+      wx.showToast({ title: (r && r.message) || '结算完成', icon: 'success', duration: 3000 });
       var pages = getCurrentPages();
       var prev = pages[pages.length - 2];
       if (prev && typeof prev.loadDetail === 'function') { prev.loadDetail(); }

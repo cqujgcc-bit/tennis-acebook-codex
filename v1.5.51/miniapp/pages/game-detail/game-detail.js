@@ -293,7 +293,8 @@ Page({
       .then(function (r) {
         wx.hideLoading();
         that.setData({ confirming: false });
-        wx.showToast({ title: (r && r.message) || '球局已完成，场地费已结算', icon: 'success', duration: 2000 });
+        wx.showToast({ title: (r && r.message) || '球局已完成', icon: 'success', duration: 3000 });
+          if (r && !r.settled) { that.setData({ warningMsg: r.message }); }
         that.loadDetail();
       })
       .catch(function (err) {
