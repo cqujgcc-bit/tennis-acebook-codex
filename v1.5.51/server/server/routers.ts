@@ -2693,7 +2693,8 @@ export const appRouter = router({
             const organizer = await db.getUserById(match.authorId);
             if (organizer?.wechatOpenid) {
               const batchId = generateOrderId();
-              await transferToUser({ batchId, openid: organizer.wechatOpenid, amountFen: Math.round(Number(order.amount) * 100), remark: `球局「${match.title}」补缴结算` });
+              const shortTopupTitle = (match.title || '').substring(0, 16);
+              await transferToUser({ batchId, openid: organizer.wechatOpenid, amountFen: Math.round(Number(order.amount) * 100), remark: `球局「${shortTopupTitle}」补缴` });
               await db.updateMatchOrder(input.orderId, { status: "settled", settledAt: new Date() });
               await sendNotification(match.authorId, "system", "补缴到账", `「${match.title}」有参与者补缴 ${Number(order.amount).toFixed(2)} 元，已结算到您的微信零钱。`, input.matchId);
             }
@@ -2942,7 +2943,8 @@ export const appRouter = router({
             const payeeOpenid = organizer?.wechatOpenid;
             if (payeeOpenid && settleFen > 0) {
               const batchId = generateOrderId();
-              const transfer = await transferToUser({ batchId, openid: payeeOpenid, amountFen: settleFen, remark: `球局「${safeMatch.title}」场地费结算` });
+              const shortTitle = (safeMatch.title || '').substring(0, 16);
+              const transfer = await transferToUser({ batchId, openid: payeeOpenid, amountFen: settleFen, remark: `球局「${shortTitle}」结算` });
               await dbInst.update(matchSettlements).set({ status: "settled", settledAt: new Date(), wxBatchId: transfer.batchId }).where(eq(matchSettlements.matchId, input.matchId));
               await dbInst.update(matchOrders).set({ status: "settled", settledAt: new Date() })
                 .where(and(eq(matchOrders.matchId, input.matchId), inArray(matchOrders.status, ["paid"])));
@@ -2987,7 +2989,8 @@ export const appRouter = router({
           } else {
             const amountFen = Math.round(totalAmount * 100);
             const batchId = generateOrderId();
-            const transfer = await transferToUser({ batchId, openid: payeeOpenid, amountFen, remark: `球局「${safeMatch.title}」场地费结算` });
+            const shortTitle = (safeMatch.title || '').substring(0, 16);
+            const transfer = await transferToUser({ batchId, openid: payeeOpenid, amountFen, remark: `球局「${shortTitle}」结算` });
             await dbInst.update(matchSettlements).set({ status: "settled", settledAt: new Date(), wxBatchId: transfer.batchId }).where(eq(matchSettlements.matchId, input.matchId));
             await dbInst.update(matchOrders).set({ status: "settled", settledAt: new Date() })
               .where(and(eq(matchOrders.matchId, input.matchId), eq(matchOrders.status, "paid")));

@@ -234,7 +234,7 @@ export async function transferToUser(params: {
       total_num: 1,
       transfer_detail_list: [
         {
-          out_detail_no: `${params.batchId}_001`,
+          out_detail_no: `${params.batchId}001`,
           transfer_amount: params.amountFen,
           transfer_remark: params.remark,
           openid: params.openid,
