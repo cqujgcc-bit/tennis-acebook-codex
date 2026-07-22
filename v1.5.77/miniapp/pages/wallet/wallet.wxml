@@ -1,0 +1,128 @@
+<view class="page">
+  <!-- 顶部收入概览 -->
+  <view class="overview">
+    <view class="ov-main">
+      <text class="ov-label">累计结算收入（元）</text>
+      <text class="ov-amount">{{totalSettled}}</text>
+    </view>
+    <view class="ov-sub">
+      <text class="ov-sub-label">待结算 / 处理中</text>
+      <text class="ov-sub-amount">¥{{totalPending}}</text>
+    </view>
+    <view class="ov-note">平台不收取任何场地费抽成，发起人确认完成后全额结算到微信零钱</view>
+  </view>
+
+  <!-- V6 待补缴提醒 -->
+  <view wx:if="{{topupList.length}}" class="topup-card">
+    <view class="topup-card-head">
+      <text class="topup-card-title">待补缴费用 ¥{{totalTopup}}</text>
+      <text class="topup-card-sub">以下球局按实际到场人数重算，需补缴差额。未结清将无法报名新球局。</text>
+    </view>
+    <view wx:for="{{topupList}}" wx:key="matchId" class="topup-row" data-id="{{item.matchId}}" data-amount="{{item.amountStr}}" data-title="{{item.title}}" bindtap="onGoTopup">
+      <view class="topup-row-left">
+        <text class="topup-row-title">{{item.title}}</text>
+        <text class="topup-row-sub">{{item.matchDateStr}}</text>
+      </view>
+      <view class="topup-row-right">
+        <text class="topup-row-amt">¥{{item.amountStr}}</text>
+        <text class="topup-row-btn">去补缴</text>
+      </view>
+    </view>
+  </view>
+
+  <!-- Tab 切换 -->
+  <view class="tabs">
+    <view class="tab {{tab === 'income' ? 'tab-on' : ''}}" data-tab="income" bindtap="switchTab">结算收入</view>
+    <view class="tab {{tab === 'expense' ? 'tab-on' : ''}}" data-tab="expense" bindtap="switchTab">我的支付</view>
+  </view>
+
+  <!-- 结算收入 -->
+  <block wx:if="{{tab === 'income'}}">
+    <view wx:if="{{pendingSettlements.length}}" class="group">
+      <view class="group-title">待结算 / 处理中</view>
+      <view wx:for="{{pendingSettlements}}" wx:key="matchId" class="item" data-id="{{item.matchId}}" bindtap="onGoDetail">
+        <view class="item-left">
+          <text class="item-title">{{item.title}}</text>
+          <text class="item-sub">{{item.matchDateStr}}{{item.whenStr ? ' · 确认 ' + item.whenStr : ''}}</text>
+        </view>
+        <view class="item-right">
+          <text class="item-amount pending">+{{item.amountStr}}</text>
+          <text class="item-status">处理中</text>
+        </view>
+      </view>
+    </view>
+
+    <view wx:if="{{disputedSettlements.length}}" class="group">
+      <view class="group-title">有异议（冻结）</view>
+      <view wx:for="{{disputedSettlements}}" wx:key="matchId" class="item" data-id="{{item.matchId}}" bindtap="onGoDetail">
+        <view class="item-left">
+          <text class="item-title">{{item.title}}</text>
+          <text class="item-sub">{{item.matchDateStr}}</text>
+        </view>
+        <view class="item-right">
+          <text class="item-amount disputed">{{item.amountStr}}</text>
+          <text class="item-status">冻结</text>
+        </view>
+      </view>
+    </view>
+
+    <view wx:if="{{settledSettlements.length}}" class="group">
+      <view class="group-title">已结算</view>
+      <view wx:for="{{settledSettlements}}" wx:key="matchId" class="item" data-id="{{item.matchId}}" bindtap="onGoDetail">
+        <view class="item-left">
+          <text class="item-title">{{item.title}}</text>
+          <text class="item-sub">{{item.matchDateStr}}{{item.whenStr ? ' · 到账 ' + item.whenStr : ''}}</text>
+        </view>
+        <view class="item-right">
+          <text class="item-amount income">+{{item.amountStr}}</text>
+          <text class="item-status done">已到账</text>
+        </view>
+      </view>
+    </view>
+
+    <view wx:if="{{!loading && !pendingSettlements.length && !settledSettlements.length && !disputedSettlements.length}}" class="empty">
+      <text class="empty-ico">🎾</text>
+      <text class="empty-text">还没有结算记录</text>
+      <text class="empty-sub">作为发起人收取场地费的球局，确认完成后会在这里展示</text>
+    </view>
+  </block>
+
+  <!-- 我的支付 -->
+  <block wx:if="{{tab === 'expense'}}">
+    <view wx:if="{{paidOrders.length}}" class="group">
+      <view class="group-title">已支付</view>
+      <view wx:for="{{paidOrders}}" wx:key="orderId" class="item" data-id="{{item.matchId}}" bindtap="onGoDetail">
+        <view class="item-left">
+          <text class="item-title">{{item.title}}</text>
+          <text class="item-sub">{{item.matchDateStr}}{{item.whenStr ? ' · 支付 ' + item.whenStr : ''}}</text>
+        </view>
+        <view class="item-right">
+          <text class="item-amount expense">-{{item.amountStr}}</text>
+          <text class="item-status done">已支付</text>
+        </view>
+      </view>
+    </view>
+
+    <view wx:if="{{refundedOrders.length}}" class="group">
+      <view class="group-title">已退款</view>
+      <view wx:for="{{refundedOrders}}" wx:key="orderId" class="item" data-id="{{item.matchId}}" bindtap="onGoDetail">
+        <view class="item-left">
+          <text class="item-title">{{item.title}}</text>
+          <text class="item-sub">{{item.matchDateStr}}{{item.whenStr ? ' · 退款 ' + item.whenStr : ''}}</text>
+        </view>
+        <view class="item-right">
+          <text class="item-amount income">+{{item.amountStr}}</text>
+          <text class="item-status done">已退款</text>
+        </view>
+      </view>
+    </view>
+
+    <view wx:if="{{!loading && !paidOrders.length && !refundedOrders.length}}" class="empty">
+      <text class="empty-ico">💳</text>
+      <text class="empty-text">还没有支付记录</text>
+      <text class="empty-sub">参加收费球局预付的场地费会在这里展示</text>
+    </view>
+  </block>
+
+  <view class="foot-note">如对费用有异议，请在球局群内与发起人私下协商，平台不介入资金纠纷。</view>
+</view>
