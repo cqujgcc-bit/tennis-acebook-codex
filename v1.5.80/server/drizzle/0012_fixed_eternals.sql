@@ -1,0 +1,1 @@
+ALTER TABLE `tennis_matches` ADD `courtNo` varchar(50);

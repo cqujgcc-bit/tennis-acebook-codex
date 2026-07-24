@@ -1,0 +1,7 @@
+{
+  "navigationBarTitleText": "消息中心",
+  "navigationBarBackgroundColor": "#00411A",
+  "navigationBarTextStyle": "white",
+  "backgroundColor": "#F4F6F5",
+  "enablePullDownRefresh": true
+}
