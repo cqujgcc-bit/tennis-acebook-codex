@@ -1,0 +1,153 @@
+<view class="page" wx:if="{{game}}">
+  <view class="hero">
+    <view class="hero-title">{{game.title}}</view>
+    <view wx:if="{{game.isPrivate}}" class="hero-circle">圈子专属 · {{game.circleName}}</view>
+    <view class="hero-status">{{game.isCancelled ? '已取消' : ((game.isCompleted || game.isStarted) ? '已结束' : (game.status === 'full' ? '已满员' : '招募中'))}}</view>
+  </view>
+
+  <!-- 已取消横幅：发起人已取消该球局 -->
+  <view wx:if="{{game.isCancelled}}" class="cancelled-banner">
+    <text class="cancelled-banner-icon">⚠️</text>
+    <text class="cancelled-banner-text">该球局已被发起人取消，不再接受报名。如已支付费用，系统已自动原路退款。</text>
+  </view>
+
+  <view class="info-card">
+    <view class="info-row"><text class="info-label">时间</text><text class="info-val">{{game.date}} {{game.week}} {{game.startTime}}-{{game.endTime}}</text></view>
+    <view class="info-row"><text class="info-label">球场</text><text class="info-val">{{game.courtName}}</text><text wx:if="{{game.hasGeo}}" class="nav-btn" bindtap="onNavigate">导航 ›</text></view>
+    <view class="info-row"><text class="info-label">区域</text><text class="info-val">{{game.district}}</text></view>
+    <view class="info-row"><text class="info-label">水平</text><text class="info-val">{{game.levelRange}}</text></view>
+    <view class="info-row"><text class="info-label">费用</text><text class="info-val price">{{game.costPerPlayer > 0 ? '¥' + game.costPerPlayer + '/人' : '免费'}}</text></view>
+    <view wx:if="{{game.feeRequired}}" class="info-row"><text class="info-label"></text><text class="info-val fee-tip">需线上预付场地费，平台代收托管，发起人确认完成后零抽成全额结算给发起人；如对费用有异议，请在球局群内与发起人私下协商，平台不介入资金纠纷</text></view>
+    <view wx:if="{{game.description}}" class="info-row"><text class="info-label">说明</text><text class="info-val">{{game.description}}</text></view>
+  </view>
+
+  <view class="section">
+    <view class="section-title">已报名 {{game.currentPlayers}}/{{game.maxPlayers}}</view>
+    <view class="players-grid">
+      <view wx:for="{{game.players}}" wx:key="index" class="player-item">
+        <view class="avatar-wrap">
+          <image wx:if="{{item.avatar}}" class="avatar avatar-photo" src="{{item.avatar}}" mode="aspectFill"></image>
+          <view wx:else class="avatar">{{item.name[0]}}</view>
+          <view wx:if="{{item.isHost}}" class="host-badge">队长</view>
+        </view>
+        <text class="player-name">{{item.name}}</text>
+        <text class="player-level">{{item.level ? 'NTRP ' + item.level : '水平不限'}}</text>
+      </view>
+      <view wx:for="{{emptySlots}}" wx:key="*this" class="player-item empty-slot">
+        <view class="avatar avatar-empty">+</view>
+        <text class="player-name">待加入</text>
+      </view>
+    </view>
+  </view>
+
+  <!-- 候补名单 -->
+  <view wx:if="{{game.waitlistCount > 0}}" class="section">
+    <view class="section-title">候补名单 {{game.waitlistCount}} 人</view>
+    <view class="waitlist-list">
+      <view wx:for="{{game.waiters}}" wx:key="index" class="waitlist-row">
+        <view class="avatar-wrap">
+          <image wx:if="{{item.avatar}}" class="avatar avatar-photo" src="{{item.avatar}}" mode="aspectFill"></image>
+          <view wx:else class="avatar avatar-wait">{{item.name[0]}}</view>
+          <view class="wait-badge">{{index + 1}}</view>
+        </view>
+        <view class="waitlist-info">
+          <text class="player-name">{{item.name}}</text>
+          <text class="player-level">{{item.level ? 'NTRP ' + item.level : '水平不限'}}</text>
+        </view>
+        <view wx:if="{{game.isAuthor && !game.ended && game.status !== 'completed' && game.status !== 'cancelled'}}" class="approve-btn" data-uid="{{item.id}}" data-name="{{item.name}}" bindtap="onApproveWaitlist">同意加入</view>
+      </view>
+    </view>
+    <view class="waitlist-rule">
+      <text wx:if="{{game.isAuthor}}">作为发起人，你可点「同意加入」让候补球友进场：名额自动 +1，{{game.feeRequired ? '人均费用按新人数重算，已支付球友自动退回差价，被同意者需完成支付才正式占位' : '该球友直接进场报名成功'}}。</text>
+      <text wx:else>球局满员时可加入候补排队。免费局有人退出时，排第一的候补将自动补位；收费局出现空位会通知所有候补者，先到先得完成支付者占位。发起人也可主动同意候补者加入（名额+1、费用重算退差价）。</text>
+    </view>
+  </view>
+
+  <!-- 参与者/发起人：退出或转让入口（未结束且未完成时） -->
+  <view wx:if="{{game.isMember && !game.isAuthor && !game.ended && game.status !== 'completed' && game.status !== 'cancelled'}}" class="leave-entry" bindtap="onLeaveOrReplace">
+    <text class="leave-entry-text">临时有事？找人替我 / 退出球局</text>
+    <text class="leave-entry-arrow">›</text>
+  </view>
+
+  <view wx:if="{{game.isMember}}" class="chat-entry" bindtap="onEnterChat">
+    <view class="chat-entry-left">
+      <view class="chat-entry-icon">💬</view>
+      <view class="chat-entry-text">
+        <text class="chat-entry-title">进入局内群聊</text>
+        <text class="chat-entry-sub">和球友沟通拼车、带球、集合时间</text>
+      </view>
+    </view>
+    <text class="chat-entry-arrow">›</text>
+  </view>
+
+  <!-- 发起人：编辑球局入口（未完成/未取消） -->
+  <view wx:if="{{game.isAuthor && !game.isCompleted && !game.isCancelled}}" class="edit-entry" bindtap="onEditMatch">
+    <text class="edit-entry-text">✎ 编辑球局（标题/时间/地点/名额/费用）</text>
+    <text class="edit-entry-arrow">›</text>
+  </view>
+
+  <!-- 参与者：待补缴入口 -->
+  <view wx:if="{{game.myTopupPending}}" class="topup-entry" bindtap="onGoTopup">
+    <view class="topup-entry-left">
+      <text class="topup-entry-title">待补缴 ¥{{game.myTopupAmount}}</text>
+      <text class="topup-entry-sub">本局按实际到场人数重算，请补缴差额</text>
+    </view>
+    <text class="topup-entry-arrow">去补缴 ›</text>
+  </view>
+
+  <!-- 发起人：取消球局入口 -->
+  <view wx:if="{{game.canCancel}}" class="cancel-entry" bindtap="onCancelMatch">
+    <text class="cancel-entry-text">取消球局{{game.feeRequired ? '（已支付报名者将自动退款）' : ''}}</text>
+    <text class="cancel-entry-arrow">›</text>
+  </view>
+
+  <!-- 发起人确认完成提示 -->
+  <view wx:if="{{game.canConfirmComplete}}" class="settle-tip">球局已结束？点击下方「确认球局完成」，已收取的场地费将立即全额结算到您的微信零钱（平台零抽成）。</view>
+
+  <view wx:if="{{game.contactInfo}}" class="section">
+    <view class="section-title">联系方式</view>
+    <view class="info-val" style="padding:0 8rpx;">{{game.contactInfo}}</view>
+  </view>
+
+  <!-- 接位分享就绪态：点击直接弹出微信转发窗口 -->
+  <view wx:if="{{replaceShareReady}}" class="bottom-bar">
+    <view class="bar-cancel-replace" bindtap="onCancelReplaceShare">取消</view>
+    <button class="bar-btn bar-btn-pay" open-type="share">发送接位邀请·转发给球友</button>
+  </view>
+
+  <view wx:else class="bottom-bar">
+    <view class="bar-price">{{game.costPerPlayer > 0 ? '¥' + game.costPerPlayer : '免费'}}<text wx:if="{{game.costPerPlayer > 0}}" class="bar-price-unit">/人</text></view>
+    <button class="bar-share" open-type="share">分享</button>
+
+    <!-- 已结束/取消：优先判定，任何角色在已取消/已结束时都显示禁用按钮 -->
+    <button wx:if="{{game.isCancelled || game.isCompleted}}" class="bar-btn bar-btn-disabled">
+      {{game.isCancelled ? '已取消' : '已结束'}}
+    </button>
+
+    <!-- 发起人：可确认完成（开球后且未完成）；收费局跳结算页，免费局直接确认 -->
+    <button wx:elif="{{game.canConfirmComplete}}" class="bar-btn bar-btn-pay" loading="{{confirming}}" bindtap="onConfirmComplete">{{game.feeRequired ? '确认到场并结算' : '确认球局完成'}}</button>
+
+    <!-- 已开球：开球时间已过，任何非发起人角色一律禁止报名/候补/支付 -->
+    <button wx:elif="{{game.isStarted}}" class="bar-btn bar-btn-disabled">该球局已开始，无法报名</button>
+
+    <!-- 发起人：其他状态 -->
+    <button wx:elif="{{game.isAuthor}}" class="bar-btn bar-btn-disabled">我是发起人</button>
+
+    <!-- 已报名待支付（收费局） -->
+    <button wx:elif="{{game.needPay}}" class="bar-btn bar-btn-pay" loading="{{paying}}" bindtap="onPay">去支付 ¥{{game.feePerPerson}}</button>
+
+    <!-- 已报名已支付 / 免费已加入 -->
+    <button wx:elif="{{game.isMember}}" class="bar-btn bar-btn-joined">{{game.paid ? '已报名·已支付 ✓' : '已报名 ✓'}}</button>
+
+    <!-- 满员未报名：候补中 -->
+    <button wx:elif="{{myWaitlist.onWaitlist}}" class="bar-btn bar-btn-wait" bindtap="onLeaveWaitlist">候补中·第{{myWaitlist.position}}位（退出）</button>
+
+    <!-- 满员未报名：加入候补 -->
+    <button wx:elif="{{game.currentPlayers >= game.maxPlayers}}" class="bar-btn" loading="{{waiting}}" bindtap="onJoinWaitlist">已满员·加入候补</button>
+
+    <!-- 未报名：免费/收费 -->
+    <button wx:else class="bar-btn" loading="{{joining}}" bindtap="onJoin">
+      {{game.feeRequired ? '报名并支付 ¥' + game.feePerPerson : '加入球局'}}
+    </button>
+  </view>
+</view>

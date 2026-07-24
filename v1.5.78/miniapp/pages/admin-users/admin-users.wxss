@@ -1,0 +1,28 @@
+.page { min-height: 100vh; background: #f4f6f5; padding-bottom: 40rpx; }
+.search-bar { display: flex; align-items: center; padding: 12rpx 12rpx; background: #fff; position: sticky; top: 0; z-index: 5; }
+.search-input { flex: 1; height: 68rpx; background: #f2f4f3; border-radius: 30rpx; padding: 0 24rpx; font-size: 26rpx; line-height: 68rpx; }
+.search-btn { height: 68rpx; line-height: 68rpx; padding: 0 32rpx; margin-left: 10rpx; white-space: nowrap; background: #0B3D2E; color: #fff; border-radius: 30rpx; font-size: 26rpx; }
+.total-tip { font-size: 24rpx; color: #888; padding: 16rpx 30rpx; }
+
+.u-list { padding: 0 24rpx; }
+.u-card { background: #fff; border-radius: 24rpx; padding: 26rpx; margin-bottom: 20rpx; box-shadow: 0 2rpx 10rpx rgba(0,0,0,0.04); }
+.u-top { display: flex; }
+.u-avatar { width: 88rpx; height: 88rpx; border-radius: 50%; background: #eee; margin-right: 20rpx; }
+.u-info { flex: 1; }
+.u-name-row { display: flex; align-items: center; }
+.u-name { font-size: 30rpx; font-weight: 600; color: #222; margin-right: 14rpx; }
+.u-role { font-size: 20rpx; padding: 2rpx 12rpx; border-radius: 8rpx; background: #eef6f0; color: #0B3D2E; }
+.u-role.role-admin { background: #fff0e6; color: #d4690c; }
+.u-role.role-coach { background: #e8f0ff; color: #2b6cd4; }
+.u-banned { font-size: 20rpx; color: #fff; background: #ff4d4f; border-radius: 8rpx; padding: 2rpx 12rpx; margin-left: 10rpx; }
+.u-meta { font-size: 24rpx; color: #888; margin-top: 10rpx; }
+.u-credit { font-size: 24rpx; color: #666; margin-top: 8rpx; }
+.credit-num { font-weight: 700; color: #0B3D2E; }
+.credit-num.low { color: #ff4d4f; }
+.u-actions { display: flex; margin-top: 22rpx; border-top: 1rpx solid #f0f0f0; padding-top: 20rpx; }
+.act-btn { flex: 1; text-align: center; font-size: 26rpx; color: #0B3D2E; padding: 12rpx 0; border-right: 1rpx solid #f0f0f0; }
+.act-btn:last-child { border-right: none; }
+.act-btn.ban { color: #ff4d4f; }
+.act-btn.unban { color: #2e7d32; }
+
+.loading-tip, .nomore, .empty { text-align: center; color: #999; font-size: 26rpx; padding: 40rpx 0; }
