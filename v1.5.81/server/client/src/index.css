@@ -1,0 +1,203 @@
+@import "tailwindcss";
+@import "tw-animate-css";
+
+@custom-variant dark (&:is(.dark *));
+
+/* ─── Google Fonts ─────────────────────────────────────────────────────────── */
+@import url('https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;500;600;700&family=Inter:wght@300;400;500;600;700&display=swap');
+
+@theme inline {
+  /* ─── Color Palette: Elegant Tennis ─────────────────────────────────────── */
+  --color-background: oklch(0.98 0.005 95);
+  --color-foreground: oklch(0.15 0.01 250);
+  --color-card: oklch(1 0 0);
+  --color-card-foreground: oklch(0.15 0.01 250);
+  --color-popover: oklch(1 0 0);
+  --color-popover-foreground: oklch(0.15 0.01 250);
+
+  /* Primary: Deep Forest Green (tennis court) */
+  --color-primary: oklch(0.32 0.10 155);
+  --color-primary-foreground: oklch(0.98 0.005 95);
+
+  /* Secondary: Warm Champagne */
+  --color-secondary: oklch(0.94 0.02 85);
+  --color-secondary-foreground: oklch(0.25 0.01 250);
+
+  /* Accent: Tennis Ball Yellow-Green */
+  --color-accent: oklch(0.82 0.16 120);
+  --color-accent-foreground: oklch(0.15 0.01 250);
+
+  --color-muted: oklch(0.95 0.005 95);
+  --color-muted-foreground: oklch(0.55 0.01 250);
+  --color-border: oklch(0.88 0.01 95);
+  --color-input: oklch(0.88 0.01 95);
+  --color-ring: oklch(0.32 0.10 155);
+
+  --color-destructive: oklch(0.55 0.22 25);
+  --color-destructive-foreground: oklch(0.98 0 0);
+
+  /* Gold accent for premium feel */
+  --color-gold: oklch(0.72 0.12 75);
+  --color-gold-light: oklch(0.92 0.06 85);
+
+  /* ─── Typography ─────────────────────────────────────────────────────────── */
+  --font-sans: 'Inter', 'PingFang SC', 'Helvetica Neue', sans-serif;
+  --font-serif: 'Playfair Display', 'Georgia', serif;
+
+  /* ─── Radius ─────────────────────────────────────────────────────────────── */
+  --radius: 0.75rem;
+  --radius-sm: 0.5rem;
+  --radius-lg: 1rem;
+  --radius-xl: 1.5rem;
+
+  /* ─── Shadows ────────────────────────────────────────────────────────────── */
+  --shadow-elegant: 0 4px 24px oklch(0.15 0.01 250 / 0.08);
+  --shadow-card: 0 2px 12px oklch(0.15 0.01 250 / 0.06);
+  --shadow-hover: 0 8px 32px oklch(0.15 0.01 250 / 0.12);
+}
+
+/* ─── Base Styles ─────────────────────────────────────────────────────────── */
+@layer base {
+  * {
+    @apply border-border;
+  }
+
+  html {
+    scroll-behavior: smooth;
+  }
+
+  body {
+    @apply bg-background text-foreground font-sans antialiased;
+    font-feature-settings: "kern" 1, "liga" 1;
+  }
+
+  h1, h2, h3 {
+    font-family: var(--font-serif);
+    letter-spacing: -0.02em;
+  }
+
+  /* Scrollbar */
+  ::-webkit-scrollbar {
+    width: 6px;
+    height: 6px;
+  }
+  ::-webkit-scrollbar-track {
+    background: transparent;
+  }
+  ::-webkit-scrollbar-thumb {
+    background: oklch(0.75 0.01 250);
+    border-radius: 3px;
+  }
+  ::-webkit-scrollbar-thumb:hover {
+    background: oklch(0.55 0.01 250);
+  }
+}
+
+/* ─── Custom Utilities ────────────────────────────────────────────────────── */
+@layer utilities {
+  .font-serif {
+    font-family: var(--font-serif);
+  }
+
+  .text-gradient {
+    background: linear-gradient(135deg, oklch(0.32 0.10 155), oklch(0.45 0.12 155));
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+  }
+
+  .text-gradient-gold {
+    background: linear-gradient(135deg, oklch(0.65 0.14 75), oklch(0.78 0.10 85));
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+  }
+
+  .bg-court {
+    background: linear-gradient(135deg, oklch(0.28 0.09 155) 0%, oklch(0.35 0.10 155) 100%);
+  }
+
+  .bg-court-light {
+    background: linear-gradient(135deg, oklch(0.94 0.03 155) 0%, oklch(0.97 0.02 120) 100%);
+  }
+
+  .card-elegant {
+    @apply bg-card rounded-xl border border-border/50;
+    box-shadow: var(--shadow-card);
+    transition: box-shadow 0.2s ease, transform 0.2s ease;
+  }
+
+  .card-elegant:hover {
+    box-shadow: var(--shadow-hover);
+    transform: translateY(-2px);
+  }
+
+  .btn-primary-elegant {
+    @apply bg-primary text-primary-foreground rounded-lg px-6 py-3 font-medium;
+    transition: all 0.2s cubic-bezier(0.23, 1, 0.32, 1);
+  }
+
+  .btn-primary-elegant:hover {
+    background: oklch(0.28 0.10 155);
+    box-shadow: 0 4px 16px oklch(0.32 0.10 155 / 0.3);
+    transform: translateY(-1px);
+  }
+
+  .btn-primary-elegant:active {
+    transform: scale(0.97);
+  }
+
+  .section-divider {
+    height: 1px;
+    background: linear-gradient(90deg, transparent, oklch(0.85 0.01 95), transparent);
+  }
+
+  .star-rating {
+    color: oklch(0.72 0.12 75);
+  }
+
+  .badge-verified {
+    @apply inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-xs font-medium;
+    background: oklch(0.92 0.06 155);
+    color: oklch(0.32 0.10 155);
+  }
+
+  .price-tag {
+    @apply font-serif font-semibold;
+    color: oklch(0.32 0.10 155);
+  }
+
+  /* Animation utilities */
+  .animate-fade-in {
+    animation: fadeIn 0.4s cubic-bezier(0.23, 1, 0.32, 1) forwards;
+  }
+
+  .animate-slide-up {
+    animation: slideUp 0.4s cubic-bezier(0.23, 1, 0.32, 1) forwards;
+  }
+
+  @keyframes fadeIn {
+    from { opacity: 0; }
+    to { opacity: 1; }
+  }
+
+  @keyframes slideUp {
+    from { opacity: 0; transform: translateY(16px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+}
+
+/* ─── Flex defaults ───────────────────────────────────────────────────────── */
+.flex {
+  min-width: 0;
+  min-height: 0;
+}
+
+/* ─── Container ───────────────────────────────────────────────────────────── */
+.container {
+  margin-left: auto;
+  margin-right: auto;
+  padding-left: 1.5rem;
+  padding-right: 1.5rem;
+  max-width: 1280px;
+}
