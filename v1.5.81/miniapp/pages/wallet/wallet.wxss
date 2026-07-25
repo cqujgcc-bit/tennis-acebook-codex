@@ -58,3 +58,4 @@
 .topup-row-right { display: flex; align-items: center; }
 .topup-row-amt { color: #e08a00; font-size: 30rpx; font-weight: 700; margin-right: 18rpx; }
 .topup-row-btn { background: #e08a00; color: #fff; padding: 10rpx 22rpx; border-radius: 999rpx; font-size: 24rpx; font-weight: 600; }
+.retry-btn { color: #0B3D2E; font-size: 22rpx; margin-top: 4rpx; text-decoration: underline; }

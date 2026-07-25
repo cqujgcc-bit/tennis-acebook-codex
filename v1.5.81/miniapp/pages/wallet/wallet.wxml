@@ -40,14 +40,14 @@
   <block wx:if="{{tab === 'income'}}">
     <view wx:if="{{pendingSettlements.length}}" class="group">
       <view class="group-title">待结算 / 处理中</view>
-      <view wx:for="{{pendingSettlements}}" wx:key="matchId" class="item" data-id="{{item.matchId}}" bindtap="onGoDetail">
-        <view class="item-left">
+      <view wx:for="{{pendingSettlements}}" wx:key="matchId" class="item">
+        <view class="item-left" bindtap="onGoDetail" data-id="{{item.matchId}}">
           <text class="item-title">{{item.title}}</text>
           <text class="item-sub">{{item.matchDateStr}}{{item.whenStr ? ' · 确认 ' + item.whenStr : ''}}</text>
         </view>
         <view class="item-right">
           <text class="item-amount pending">+{{item.amountStr}}</text>
-          <text class="item-status">处理中</text>
+          <text class="retry-btn" bindtap="onRetrySettlement" data-match-id="{{item.matchId}}">重试打款</text>
         </view>
       </view>
     </view>
