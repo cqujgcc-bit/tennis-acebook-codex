@@ -78,7 +78,6 @@ async function wxpayRequest<T>(
       "Content-Type": "application/json",
       Accept: "application/json",
       Authorization: authHeader,
-      ...(wxpayConfig.publicKeyId ? { "Wechatpay-Serial": wxpayConfig.publicKeyId } : {}),
     },
     body: bodyStr || undefined,
   });
