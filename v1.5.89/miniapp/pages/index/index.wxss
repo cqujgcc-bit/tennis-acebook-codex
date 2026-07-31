@@ -1,0 +1,174 @@
+@import "/styles/icons.wxss";
+@import "/styles/game-card.wxss";
+
+.home { min-height: 100vh; background: #F4F6F5; padding-bottom: 40rpx; }
+
+/* ===== Hero ===== */
+.hero {
+  position: relative;
+  height: 420rpx;
+  overflow: hidden;
+}
+.hero-bg {
+  position: absolute;
+  top: 0; left: 0;
+  width: 100%; height: 100%;
+}
+.hero-mask {
+  position: absolute;
+  top: 0; left: 0;
+  width: 100%; height: 100%;
+  background:
+    linear-gradient(90deg, rgba(11,61,46,0.55) 0%, rgba(11,61,46,0.30) 40%, rgba(11,61,46,0.08) 72%, rgba(11,61,46,0) 100%),
+    linear-gradient(180deg, rgba(11,61,46,0) 35%, rgba(11,61,46,0.45) 100%);
+}
+.hero-content {
+  position: absolute;
+  left: 40rpx;
+  bottom: 96rpx;
+  color: #fff;
+}
+.hero-brand {
+  font-size: 76rpx;
+  font-weight: 800;
+  font-style: italic;
+  letter-spacing: 1rpx;
+  display: flex;
+  align-items: center;
+  text-shadow: 0 2rpx 12rpx rgba(0,0,0,0.25);
+}
+.hero-slogan {
+  margin-top: 12rpx;
+  font-size: 30rpx;
+  font-weight: 500;
+  opacity: 0.95;
+  text-shadow: 0 1rpx 8rpx rgba(0,0,0,0.3);
+}
+
+/* ===== 底部悬浮双按钮栏（单手拇指区）===== */
+.dock-spacer {
+  /* 占位高度 = 按钮高 + 上下边距 + 底部安全区，防止遮挡列表末尾 */
+  height: calc(132rpx + env(safe-area-inset-bottom));
+}
+.action-dock {
+  position: fixed;
+  left: 0; right: 0; bottom: 0;
+  z-index: 50;
+  display: flex;
+  gap: 22rpx;
+  padding: 18rpx 30rpx calc(18rpx + env(safe-area-inset-bottom));
+  background: rgba(255,255,255,0.92);
+  backdrop-filter: blur(16rpx);
+  box-shadow: 0 -8rpx 28rpx rgba(11,61,46,0.10);
+  border-top: 2rpx solid rgba(11,61,46,0.05);
+}
+.dock-btn {
+  flex: 1;
+  height: 92rpx;
+  border-radius: 999rpx;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: transform 0.08s ease, opacity 0.08s ease;
+}
+.dock-primary {
+  background: linear-gradient(135deg, #0B3D2E 0%, #14653C 100%);
+  box-shadow: 0 8rpx 22rpx rgba(11,61,46,0.28);
+}
+.dock-ghost {
+  background: #fff;
+  border: 2rpx solid #0B3D2E;
+}
+.dock-hover {
+  transform: scale(0.96);
+  opacity: 0.9;
+}
+.dock-icon { width: 34rpx; height: 34rpx; margin-right: 14rpx; }
+.dock-text { font-size: 31rpx; font-weight: 700; color: #fff; letter-spacing: 1rpx; }
+.dock-text-dark { color: #0B3D2E; }
+.empty-zone-pad { padding-bottom: 20rpx; }
+
+/* ===== 标题 ===== */
+.rec-head {
+  display: flex; justify-content: space-between; align-items: center;
+  padding: 46rpx 36rpx 6rpx;
+}
+.rec-title { font-size: 36rpx; font-weight: 800; color: #1A2420; }
+.rec-more { display: flex; align-items: center; font-size: 26rpx; color: #7A8884; }
+.rec-more-icon { width: 26rpx; height: 26rpx; margin-left: 2rpx; }
+
+.game-list {
+  padding: 16rpx 30rpx;
+}
+.empty { text-align: center; color: #aaa; font-size: 26rpx; padding: 50rpx 0; }
+
+/* ===== 空态引导区 ===== */
+.empty-zone { padding: 10rpx 30rpx 10rpx; }
+.empty-illustration { text-align: center; font-size: 96rpx; margin-top: 10rpx; }
+.empty-title {
+  text-align: center; font-size: 32rpx; font-weight: 700;
+  color: #1A2420; margin-top: 10rpx;
+}
+.empty-sub {
+  text-align: center; font-size: 26rpx; color: #7A8884;
+  margin: 12rpx 40rpx 30rpx; line-height: 1.5;
+}
+.quick-cards { display: flex; flex-direction: column; }
+.quick-card {
+  display: flex; align-items: center;
+  background: #fff; border-radius: 22rpx;
+  padding: 28rpx 26rpx; margin-bottom: 20rpx;
+  box-shadow: 0 6rpx 20rpx rgba(11,61,46,0.06);
+}
+.quick-emoji {
+  width: 80rpx; height: 80rpx; border-radius: 50%; flex-shrink: 0;
+  background: rgba(212,255,63,0.22);
+  display: flex; align-items: center; justify-content: center;
+  font-size: 42rpx; margin-right: 22rpx;
+}
+.quick-info { flex: 1; min-width: 0; }
+.quick-name { font-size: 30rpx; font-weight: 700; color: #1A2420; }
+.quick-desc { font-size: 24rpx; color: #8A968F; margin-top: 8rpx; }
+
+/* ============================================================
+   v1.5.28 UI 运动风尚升级
+   ============================================================ */
+
+/* —— Hero 品牌字微光脉冲 —— */
+.hero-brand {
+  animation: ab-pulse-glow 3s ease-in-out infinite;
+}
+
+/* —— 卡片入场动画（依次进场）—— */
+.game-card {
+  animation: ab-card-enter 0.5s ease-out both;
+}
+.game-card:nth-child(1) { animation-delay: 0s; }
+.game-card:nth-child(2) { animation-delay: 0.08s; }
+.game-card:nth-child(3) { animation-delay: 0.16s; }
+.game-card:nth-child(4) { animation-delay: 0.24s; }
+.game-card:nth-child(5) { animation-delay: 0.32s; }
+.game-card:nth-child(6) { animation-delay: 0.40s; }
+
+/* —— 快速引导卡入场 —— */
+.quick-card {
+  animation: ab-card-enter 0.45s ease-out both;
+}
+.quick-card:nth-child(1) { animation-delay: 0.1s; }
+.quick-card:nth-child(2) { animation-delay: 0.18s; }
+.quick-card:nth-child(3) { animation-delay: 0.26s; }
+.quick-card:nth-child(4) { animation-delay: 0.34s; }
+
+/* —— 活动标题更突出 —— */
+.rec-title {
+  position: relative;
+  display: inline-block;
+}
+.rec-title::after {
+  content: '';
+  position: absolute;
+  left: 0; bottom: -4rpx;
+  width: 48rpx; height: 6rpx;
+  background: #D4FF3F;
+  border-radius: 3rpx;
+}
