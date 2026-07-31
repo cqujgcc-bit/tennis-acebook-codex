@@ -1,0 +1,129 @@
+<view class="page page-activity-create">
+  <!-- 模板快捷区 -->
+  <view class="tpl-section">
+    <view class="tpl-toggle" bindtap="toggleTemplates">
+      <text>📋 活动模板（{{templates.length}}）</text>
+      <text class="arrow">{{showTemplates ? '收起' : '展开'}}</text>
+    </view>
+    <view wx:if="{{showTemplates}}" class="tpl-list">
+      <view wx:if="{{templates.length === 0}}" class="tpl-empty">暂无模板，填好下方表单后可"存为模板"一键复用</view>
+      <view wx:for="{{templates}}" wx:key="id" class="tpl-item">
+        <view class="tpl-info" data-idx="{{index}}" bindtap="onPickTemplate">
+          <text class="tpl-title">{{item.title}}</text>
+          <text class="tpl-sub">{{item.startTime || ''}}{{item.endTime ? '-' + item.endTime : ''}} · {{item.venueName || '未设场地'}} · {{item.feeMode === 'aa' ? 'AA' : '免费'}}</text>
+        </view>
+        <text class="tpl-del" data-id="{{item.id}}" catchtap="onDeleteTemplate">删除</text>
+      </view>
+    </view>
+  </view>
+
+  <!-- ─── 活动信息 ─── -->
+  <view class="form-section">
+    <view class="section-accent"></view>
+    <view class="section-hd">
+      <text class="section-hd-icon">🏷️</text>
+      <text class="section-hd-title">活动信息</text>
+    </view>
+    <view class="section-bd">
+      <view class="field">
+        <text class="field-lbl">活动标题</text>
+        <input class="field-inp" placeholder="如：周三晚欢乐双打" value="{{title}}" data-field="title" bindinput="onInput" />
+      </view>
+      <view class="field field-col">
+        <text class="field-lbl">活动说明</text>
+        <textarea class="field-ipta" placeholder="补充说明（选填）" value="{{description}}" data-field="description" bindinput="onInput" maxlength="500" />
+      </view>
+    </view>
+  </view>
+
+  <!-- ─── 时间设置 ─── -->
+  <view class="form-section">
+    <view class="section-accent"></view>
+    <view class="section-hd">
+      <text class="section-hd-icon">🕐</text>
+      <text class="section-hd-title">时间设置</text>
+    </view>
+    <view class="section-bd">
+      <!-- 快速日期选择 -->
+      <view class="date-quick-row">
+        <view class="date-chip {{quickDate === 'today' ? 'chip-on' : ''}}" data-day="today" bindtap="onQuickDate">今天</view>
+        <view class="date-chip {{quickDate === 'tomorrow' ? 'chip-on' : ''}}" data-day="tomorrow" bindtap="onQuickDate">明天</view>
+        <view class="date-chip {{quickDate === 'dayafter' ? 'chip-on' : ''}}" data-day="dayafter" bindtap="onQuickDate">后天</view>
+        <picker mode="date" value="{{activityDate}}" bindchange="onDateChange">
+          <view class="date-chip date-picker-chip">{{activityDate || '选其他日期 ▾'}}</view>
+        </picker>
+      </view>
+      <!-- 时间联排 -->
+      <view class="time-row">
+        <picker mode="time" value="{{startTime}}" bindchange="onStartTimeChange">
+          <view class="time-picker">{{startTime || '开始'}}</view>
+        </picker>
+        <text class="time-connector">至</text>
+        <picker mode="time" value="{{endTime}}" bindchange="onEndTimeChange">
+          <view class="time-picker">{{endTime || '结束'}}</view>
+        </picker>
+      </view>
+      <!-- 重复发布 -->
+      <view class="field">
+        <text class="field-lbl">重复发布</text>
+        <picker mode="selector" range="{{repeatOptions}}" value="{{repeatIndex}}" bindchange="onRepeatChange">
+          <view class="field-sel">{{repeatOptions[repeatIndex]}}</view>
+        </picker>
+      </view>
+      <view wx:if="{{repeatWeeks > 0}}" class="field-hint">⏰ 将从所选日期起，每周同一天连续生成 {{repeatWeeks}} 场活动</view>
+    </view>
+  </view>
+
+  <!-- ─── 场地与人数 ─── -->
+  <view class="form-section">
+    <view class="section-accent"></view>
+    <view class="section-hd">
+      <text class="section-hd-icon">📍</text>
+      <text class="section-hd-title">场地与人数</text>
+    </view>
+    <view class="section-bd">
+      <view class="field">
+        <text class="field-lbl">场地</text>
+        <input class="field-inp" placeholder="如：大沙河网球中心3号场" value="{{venueName}}" data-field="venueName" bindinput="onInput" />
+      </view>
+      <view class="field">
+        <text class="field-lbl">人数上限</text>
+        <view class="stepper-row">
+          <view class="stepper-btn" data-dir="minus" bindtap="onStepMax">−</view>
+          <text class="stepper-val">{{maxParticipants}}</text>
+          <view class="stepper-btn" data-dir="plus" bindtap="onStepMax">+</view>
+        </view>
+      </view>
+    </view>
+  </view>
+
+  <!-- ─── 费用 ─── -->
+  <view class="form-section">
+    <view class="section-accent"></view>
+    <view class="section-hd">
+      <text class="section-hd-icon">💰</text>
+      <text class="section-hd-title">费用</text>
+    </view>
+    <view class="section-bd">
+      <view class="fee-row">
+        <view class="fee-opt {{feeMode === 'free' ? 'fee-on' : ''}}" data-mode="free" bindtap="onFeeMode">
+          <text class="fee-ico">🆓</text>
+          <text class="fee-lbl">免费</text>
+        </view>
+        <view class="fee-opt {{feeMode === 'aa' ? 'fee-on' : ''}}" data-mode="aa" bindtap="onFeeMode">
+          <text class="fee-ico">💸</text>
+          <text class="fee-lbl">AA结算</text>
+        </view>
+      </view>
+      <view wx:if="{{feeMode === 'aa'}}" class="hint-fee">报名免费占位，活动结束后由发起人按到场人数平摊实际开销，成员在小程序内支付各自份额</view>
+      <view wx:if="{{feeMode === 'free'}}" class="hint-tip">完全免费，报名即占名额</view>
+    </view>
+  </view>
+
+  <!-- 底部操作栏 -->
+  <view class="bottom-spacer"></view>
+  <view class="create-bar">
+    <button class="bar-btn bar-btn-ghost" bindtap="onSaveAsTemplate">存为模板</button>
+    <button class="bar-btn bar-btn-primary" loading="{{submitting}}" bindtap="onSubmit">发布活动</button>
+  </view>
+</view>
