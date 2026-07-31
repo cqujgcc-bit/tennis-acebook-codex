@@ -1,0 +1,102 @@
+<view class="page">
+  <!-- 墨绿头部 -->
+  <view class="header">
+    <view class="title-row">
+      <view class="page-title">🎾 约球</view>
+      <view class="location" bindtap="onLocationTap">
+        <view class="ab-icon ab-icon-pin-white loc-icon"></view>
+        <text>{{city}}</text>
+      </view>
+    </view>
+  </view>
+
+  <!-- 搜索条 -->
+  <view class="search-bar">
+    <view class="search-input-wrap">
+      <view class="search-icon">🔍</view>
+      <input class="search-input" placeholder="搜索球场或球局标题" value="{{_searchKeyword}}" bindinput="onSearchInput" confirm-type="search" bindconfirm="onSearchConfirm" />
+      <view wx:if="{{_searchKeyword}}" class="search-clear" bindtap="onClearSearch">✕</view>
+    </view>
+  </view>
+
+  <!-- 筛选胶囊：一行平分铺满 -->
+  <view class="filter-bar">
+    <view
+      wx:for="{{filters}}"
+      wx:key="key"
+      class="filter-item {{activeFilter === item.key ? 'active' : ''}}"
+      data-key="{{item.key}}"
+      bindtap="onFilterTap"
+    >
+      {{item.label}}
+    </view>
+  </view>
+
+  <!-- 球局列表 -->
+  <view class="game-list">
+    <view
+      wx:for="{{games}}"
+      wx:key="id"
+      class="game-card {{item.status === 'full' || item.cdEnded ? 'card-full' : ''}}"
+      data-id="{{item.id}}"
+      bindtap="goDetail"
+    >
+      <view class="card-accent"></view>
+      <view class="card-body">
+        <!-- 左上角倒计时 + 右上角招募状态 -->
+        <view class="game-top">
+          <view wx:if="{{item.cdText}}" class="countdown {{item.cdClass}}">{{item.cdText}}</view>
+          <view wx:else class="countdown-placeholder"></view>
+          <view class="game-status {{item.status === 'full' ? 'status-full' : 'status-open'}}">
+            {{item.status === 'full' ? '已满员' : '招募中'}}
+          </view>
+        </view>
+
+        <view class="game-title-wrap">
+          <text class="game-title">{{item.title}}</text>
+        </view>
+
+        <view wx:if="{{item.isPrivate}}" class="badge-circle">圈 · {{item.circleName}}</view>
+
+        <view class="game-meta">
+          <view class="meta-item">
+            <text class="meta-emoji">🕒</text>
+            <text>{{item.date}} {{item.week}} {{item.startTime}}{{item.endTime ? '-' + item.endTime : ''}}</text>
+          </view>
+          <view class="meta-item">
+            <text class="meta-emoji">📍</text>
+            <text>{{item.courtName}}{{item.district ? ' · ' + item.district : ''}}{{item.distanceText}}</text>
+          </view>
+        </view>
+
+        <view class="game-tags">
+          <text class="tag tag-level">🏅 水平 {{item.levelRange}}</text>
+          <text wx:for="{{item.tags}}" wx:for-item="t" wx:key="*this" class="tag">{{t}}</text>
+        </view>
+
+        <view class="game-bottom">
+          <view class="organizer">
+            <view class="avatar avatar-sm">{{item.organizerInitial}}</view>
+            <text class="org-name">{{item.organizerName}}</text>
+          </view>
+          <view class="bottom-right">
+            <view class="players-pill">
+              <text class="players-emoji">👥</text>
+              <text>{{item.currentPlayers}}/{{item.maxPlayers}}</text>
+            </view>
+            <text class="price {{item.isFree ? 'price-free' : ''}}">{{item.priceText}}</text>
+          </view>
+        </view>
+      </view>
+    </view>
+
+    <view wx:if="{{!loading && games.length === 0}}" class="empty">暂无符合条件的球局，换个筛选或下拉刷新</view>
+    <view wx:if="{{loading}}" class="empty">加载中…</view>
+  </view>
+
+  <!-- 发起浮动按钮 -->
+  <view class="fab" bindtap="goCreate">
+    <view class="ab-icon ab-icon-plus-dark fab-plus"></view>
+    <text class="fab-text">发起球局</text>
+  </view>
+</view>
