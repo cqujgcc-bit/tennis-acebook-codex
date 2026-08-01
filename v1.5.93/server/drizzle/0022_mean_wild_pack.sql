@@ -1,0 +1,3 @@
+ALTER TABLE `notifications` MODIFY COLUMN `type` enum('booking_created','booking_confirmed','booking_rejected','booking_cancelled','lesson_reminder','payment_success','review_received','settlement_completed','circle_activity','system') NOT NULL;--> statement-breakpoint
+ALTER TABLE `circle_activities` ADD `repeatWeeks` int DEFAULT 0 NOT NULL;--> statement-breakpoint
+ALTER TABLE `circle_activities` ADD `seriesId` int;

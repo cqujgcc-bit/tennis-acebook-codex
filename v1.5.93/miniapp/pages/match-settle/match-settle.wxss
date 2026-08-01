@@ -1,0 +1,34 @@
+.page { padding: 24rpx 24rpx 160rpx; background: #f5f7f6; min-height: 100vh; }
+.banner { background: linear-gradient(135deg, #0B3D2E, #14543d); border-radius: 20rpx; padding: 32rpx 28rpx; margin-bottom: 24rpx; }
+.banner-title { display: block; color: #fff; font-size: 34rpx; font-weight: 700; margin-bottom: 12rpx; }
+.banner-sub { display: block; color: #D4FF3F; font-size: 24rpx; line-height: 1.5; }
+.card { background: #fff; border-radius: 20rpx; padding: 24rpx 28rpx; margin-bottom: 24rpx; box-shadow: 0 2rpx 12rpx rgba(11,61,46,0.04); }
+.card-head { font-size: 28rpx; font-weight: 600; color: #0B3D2E; margin-bottom: 16rpx; }
+.empty { color: #8a948f; font-size: 26rpx; padding: 24rpx 0; text-align: center; }
+.member { display: flex; align-items: center; padding: 18rpx 0; border-bottom: 1rpx solid #f0f2f1; }
+.member:last-child { border-bottom: none; }
+.avatar { width: 72rpx; height: 72rpx; border-radius: 50%; background: #eef1f0; }
+.m-info { flex: 1; margin-left: 20rpx; display: flex; flex-direction: column; }
+.m-name { font-size: 28rpx; color: #1a1a1a; font-weight: 500; }
+.m-paid { font-size: 24rpx; color: #8a948f; margin-top: 6rpx; }
+.check { width: 96rpx; height: 56rpx; line-height: 56rpx; text-align: center; border-radius: 999rpx; font-size: 24rpx; background: #f0f2f1; color: #8a948f; }
+.check.checked { background: #0B3D2E; color: #D4FF3F; }
+.summary .sum-row { display: flex; justify-content: space-between; padding: 12rpx 0; font-size: 28rpx; color: #555; }
+.summary .sum-row .val { color: #1a1a1a; font-weight: 500; }
+.summary .sum-row.hl { font-size: 30rpx; }
+.summary .sum-row.hl .val { color: #0B3D2E; font-weight: 700; }
+.divider { height: 1rpx; background: #f0f2f1; margin: 16rpx 0; }
+.preview-item { display: flex; justify-content: space-between; padding: 10rpx 0; font-size: 26rpx; }
+.p-name { color: #555; }
+.p-act { font-weight: 500; }
+.p-act.refund { color: #1a9e5c; }
+.p-act.topup { color: #e08a00; }
+.p-act.equal { color: #8a948f; }
+.p-act.absent { color: #d04545; }
+.tips { padding: 8rpx 12rpx 0; }
+.tips text { display: block; font-size: 23rpx; color: #8a948f; line-height: 1.7; }
+.footer { position: fixed; left: 0; right: 0; bottom: 0; padding: 20rpx 24rpx calc(20rpx + env(safe-area-inset-bottom)); background: #fff; box-shadow: 0 -2rpx 12rpx rgba(0,0,0,0.04); }
+.btn-primary { background: #0B3D2E; color: #D4FF3F; border-radius: 999rpx; font-size: 30rpx; font-weight: 600; height: 88rpx; line-height: 88rpx; }
+.loading { text-align: center; color: #8a948f; padding-top: 200rpx; font-size: 28rpx; }
+.member.organizer { padding: 22rpx 0; }
+.member.organizer.on .m-name { color: #0B3D2E; font-weight: 700; }

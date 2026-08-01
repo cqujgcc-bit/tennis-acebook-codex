@@ -1,0 +1,87 @@
+{
+  "pages": [
+    "pages/index/index",
+    "pages/venues/venues",
+    "pages/login/login",
+    "pages/booking/booking",
+    "pages/courses/courses",
+    "pages/circle/circle",
+    "pages/profile/profile",
+    "pages/my-matches/my-matches",
+    "pages/game-detail/game-detail",
+    "pages/create-game/create-game",
+    "pages/circle-detail/circle-detail",
+    "pages/circle-activities/circle-activities",
+    "pages/activity-create/activity-create",
+    "pages/activity-settle/activity-settle",
+    "pages/match-edit/match-edit",
+    "pages/match-settle/match-settle",
+    "pages/topup-pay/topup-pay",
+    "pages/chat/chat",
+    "pages/notifications/notifications",
+    "pages/wallet/wallet",
+    "pages/replace/replace",
+    "pages/about/about",
+    "pages/admin/admin",
+    "pages/admin-feedback/admin-feedback",
+    "pages/admin-users/admin-users",
+    "pages/admin-coaches/admin-coaches",
+    "pages/admin-broadcast/admin-broadcast",
+    "pages/admin-venues/admin-venues",
+    "pages/admin-venue-edit/admin-venue-edit"
+  ],
+  "window": {
+    "backgroundTextStyle": "dark",
+    "navigationBarBackgroundColor": "#00411A",
+    "navigationBarTitleText": "AceBook",
+    "navigationBarTextStyle": "white",
+    "backgroundColor": "#f5f7f6"
+  },
+  "tabBar": {
+    "color": "#999",
+    "selectedColor": "#0B3D2E",
+    "backgroundColor": "#fff",
+    "borderStyle": "black",
+    "list": [
+      {
+        "pagePath": "pages/index/index",
+        "text": "首页",
+        "iconPath": "assets/icons/home.png",
+        "selectedIconPath": "assets/icons/home-active.png"
+      },
+      {
+        "pagePath": "pages/booking/booking",
+        "text": "约球",
+        "iconPath": "assets/icons/booking.png",
+        "selectedIconPath": "assets/icons/booking-active.png"
+      },
+      {
+        "pagePath": "pages/circle/circle",
+        "text": "圈子",
+        "iconPath": "assets/icons/circle.png",
+        "selectedIconPath": "assets/icons/circle-active.png"
+      },
+      {
+        "pagePath": "pages/profile/profile",
+        "text": "我的",
+        "iconPath": "assets/icons/profile.png",
+        "selectedIconPath": "assets/icons/profile-active.png"
+      }
+    ]
+  },
+  "networkTimeout": {
+    "request": 10000
+  },
+  "debug": false,
+  "permission": {
+    "scope.userLocation": {
+      "desc": "你的位置信息将用于获取附近的球场和球局"
+    }
+  },
+  "requiredPrivateInfos": [
+    "chooseLocation"
+  ],
+  "style": "v2",
+  "lazyCodeLoading": "requiredComponents",
+  "sitemapLocation": "sitemap.json"
+}
