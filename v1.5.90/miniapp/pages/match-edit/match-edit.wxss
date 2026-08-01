@@ -1,0 +1,18 @@
+.page { padding: 24rpx 24rpx 160rpx; background: #f5f7f6; min-height: 100vh; }
+.card { background: #fff; border-radius: 20rpx; padding: 8rpx 28rpx; margin-bottom: 24rpx; box-shadow: 0 2rpx 12rpx rgba(11,61,46,0.04); }
+.field { display: flex; align-items: center; min-height: 96rpx; border-bottom: 1rpx solid #f0f2f1; }
+.field:last-child { border-bottom: none; }
+.field.col { flex-direction: column; align-items: stretch; padding: 20rpx 0; }
+.label { width: 180rpx; color: #0B3D2E; font-size: 28rpx; font-weight: 500; flex-shrink: 0; }
+.input { flex: 1; font-size: 28rpx; color: #1a1a1a; text-align: right; }
+.picker-val { flex: 1; font-size: 28rpx; color: #1a1a1a; text-align: right; }
+.textarea { width: 100%; height: 160rpx; font-size: 28rpx; margin-top: 12rpx; color: #1a1a1a; }
+.stepper { flex: 1; display: flex; justify-content: flex-end; align-items: center; gap: 28rpx; }
+.step-btn { width: 56rpx; height: 56rpx; line-height: 52rpx; text-align: center; border-radius: 50%; background: #0B3D2E; color: #fff; font-size: 36rpx; }
+.step-btn.disabled { background: #c8d2ce; }
+.step-val { font-size: 32rpx; font-weight: 600; color: #1a1a1a; min-width: 48rpx; text-align: center; }
+.hint { font-size: 24rpx; color: #8a948f; padding: 12rpx 0 18rpx; line-height: 1.5; }
+.strong { color: #0B3D2E; font-weight: 600; }
+.footer { position: fixed; left: 0; right: 0; bottom: 0; padding: 20rpx 24rpx calc(20rpx + env(safe-area-inset-bottom)); background: #fff; box-shadow: 0 -2rpx 12rpx rgba(0,0,0,0.04); }
+.btn-primary { background: #0B3D2E; color: #D4FF3F; border-radius: 999rpx; font-size: 30rpx; font-weight: 600; height: 88rpx; line-height: 88rpx; }
+.loading { text-align: center; color: #8a948f; padding-top: 200rpx; font-size: 28rpx; }

@@ -45,6 +45,23 @@ jobs:
           strip_components: 2
           rm: false
 
+      - name: ⚙️ 更新微信转账场景配置
+        uses: appleboy/ssh-action@v1.2.0
+        with:
+          host: 120.78.0.96
+          username: root
+          password: ${{ secrets.ALIYUN_PASSWORD }}
+          port: 22
+          script: |
+            set -e
+            cd /var/www/tennispro-new
+            sed -i 's/^WXPAY_TRANSFER_SCENE_ID=.*/WXPAY_TRANSFER_SCENE_ID=1005/' .env
+            grep -q '^WXPAY_TRANSFER_SCENE_ID=' .env || echo 'WXPAY_TRANSFER_SCENE_ID=1005' >> .env
+            sed -i 's/^WXPAY_TRANSFER_SCENE_INFO_TYPE=.*/WXPAY_TRANSFER_SCENE_INFO_TYPE=1005/' .env
+            grep -q '^WXPAY_TRANSFER_SCENE_INFO_TYPE=' .env || echo 'WXPAY_TRANSFER_SCENE_INFO_TYPE=1005' >> .env
+            grep -q '^WXPAY_TRANSFER_NOTIFY_URL=' .env || echo 'WXPAY_TRANSFER_NOTIFY_URL=https://tennispro.cn/api/wxpay/transfer-notify' >> .env
+            grep '^WXPAY_TRANSFER_SCENE_ID=\|^WXPAY_TRANSFER_SCENE_INFO_TYPE=' .env
+
       - name: 🔄 安装依赖 + 编译 + 重启
         uses: appleboy/ssh-action@v1.2.0
         with:

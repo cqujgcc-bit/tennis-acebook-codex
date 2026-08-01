@@ -1,0 +1,1 @@
+ALTER TABLE `match_messages` MODIFY COLUMN `msgType` enum('text','image','system') NOT NULL DEFAULT 'text';
