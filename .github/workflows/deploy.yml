@@ -60,6 +60,7 @@ jobs:
             sed -i 's/^WXPAY_TRANSFER_SCENE_INFO_TYPE=.*/WXPAY_TRANSFER_SCENE_INFO_TYPE=1005/' .env
             grep -q '^WXPAY_TRANSFER_SCENE_INFO_TYPE=' .env || echo 'WXPAY_TRANSFER_SCENE_INFO_TYPE=1005' >> .env
             grep -q '^WXPAY_TRANSFER_NOTIFY_URL=' .env || echo 'WXPAY_TRANSFER_NOTIFY_URL=https://tennispro.cn/api/wxpay/transfer-notify' >> .env
+            node scripts/bootstrap-wxpay-platform-cert.mjs .env
             test -n "$(grep '^WXPAY_PUBLIC_KEY=' .env | cut -d= -f2-)" || { echo '❌ WXPAY_PUBLIC_KEY 未配置，为防止支付回调中断，取消部署'; exit 1; }
             grep '^WXPAY_TRANSFER_SCENE_ID=\|^WXPAY_TRANSFER_SCENE_INFO_TYPE=' .env
 
