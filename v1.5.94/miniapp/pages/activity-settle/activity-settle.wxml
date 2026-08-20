@@ -1,0 +1,70 @@
+<view class="page">
+  <view wx:if="{{loading}}" class="loading">加载中...</view>
+
+  <block wx:elif="{{info}}">
+    <view class="head">
+      <text class="title">{{info.title}}</text>
+      <text class="sub">{{mode === 'settle' ? '默认全员到场，取消勾选未到场的成员，并填写实际总开销' : '账单明细'}}</text>
+    </view>
+
+    <!-- 结算模式：发起人操作 -->
+    <block wx:if="{{mode === 'settle'}}">
+      <view class="cost-box">
+        <text class="cost-label">实际总开销（元）</text>
+        <input class="cost-input" type="digit" placeholder="如 320" value="{{totalCost}}" bindinput="onCostInput" />
+      </view>
+      <view wx:if="{{perPersonPreview}}" class="preview">
+        {{attendeeCount}} 人到场 · 人均 ¥{{perPersonPreview}}
+      </view>
+
+      <view class="sec-title">报名成员（{{members.length}}）</view>
+      <view class="mlist">
+        <view wx:for="{{members}}" wx:key="userId" class="mitem" data-idx="{{index}}" bindtap="onToggleAttend">
+          <image class="m-av" src="{{item.avatar || '/images/default-avatar.png'}}"></image>
+          <text class="m-name">{{item.name || '球友'}}{{item.isMe ? '（我）' : ''}}</text>
+          <view class="check {{item.attendChecked ? 'check-on' : ''}}">{{item.attendChecked ? '到场' : '未到'}}</view>
+        </view>
+      </view>
+
+      <view class="footer">
+        <button class="btn btn-primary" loading="{{submitting}}" bindtap="onConfirmSettle">确认结算并下发账单</button>
+      </view>
+    </block>
+
+    <!-- 账单模式：查看 + 支付 -->
+    <block wx:else>
+      <view class="bill-summary">
+        <view class="bs-item"><text class="bs-num">¥{{info.totalCostYuan}}</text><text class="bs-lab">实际总开销</text></view>
+        <view class="bs-item"><text class="bs-num">{{info.paidCount}}</text><text class="bs-lab">已支付</text></view>
+        <view class="bs-item"><text class="bs-num bs-red">{{info.unpaidCount}}</text><text class="bs-lab">待支付</text></view>
+      </view>
+
+      <view class="sec-title">分摊明细</view>
+      <view class="mlist">
+        <view wx:for="{{members}}" wx:key="userId" class="bitem">
+          <image class="m-av" src="{{item.avatar || '/images/default-avatar.png'}}"></image>
+          <view class="b-info">
+            <text class="m-name">{{item.name || '球友'}}{{item.isMe ? '（我）' : ''}}</text>
+            <text class="b-sub" wx:if="{{!item.attended}}">未到场 · 不计费</text>
+            <text class="b-sub" wx:else>应分摊 ¥{{item.shareYuan}}</text>
+          </view>
+          <text class="b-status {{item.payStatus === 'paid' ? 's-paid' : (item.payStatus === 'unpaid' ? 's-unpaid' : 's-none')}}">
+            {{item.payStatus === 'paid' ? '已付' : (item.payStatus === 'unpaid' ? '待付' : '—')}}
+          </text>
+        </view>
+      </view>
+
+      <!-- 当前用户若有待付，显示支付按钮 -->
+      <view class="footer" wx:if="{{info.settleStatus !== 'settled'}}">
+        <block wx:for="{{members}}" wx:key="userId">
+          <button wx:if="{{item.isMe && item.payStatus === 'unpaid'}}" class="btn btn-primary" bindtap="onPay">
+            支付我的份额 ¥{{item.shareYuan}}
+          </button>
+        </block>
+      </view>
+      <view wx:if="{{info.settleStatus === 'settled'}}" class="done-tip">✓ 全部成员已结清</view>
+    </block>
+  </block>
+
+  <view wx:else class="empty">暂无结算信息</view>
+</view>

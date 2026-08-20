@@ -60,6 +60,7 @@ jobs:
             sed -i 's/^WXPAY_TRANSFER_SCENE_INFO_TYPE=.*/WXPAY_TRANSFER_SCENE_INFO_TYPE=1005/' .env
             grep -q '^WXPAY_TRANSFER_SCENE_INFO_TYPE=' .env || echo 'WXPAY_TRANSFER_SCENE_INFO_TYPE=1005' >> .env
             grep -q '^WXPAY_TRANSFER_NOTIFY_URL=' .env || echo 'WXPAY_TRANSFER_NOTIFY_URL=https://tennispro.cn/api/wxpay/transfer-notify' >> .env
+            test -n "$(grep '^WXPAY_PUBLIC_KEY=' .env | cut -d= -f2-)" || { echo '❌ WXPAY_PUBLIC_KEY 未配置，为防止支付回调中断，取消部署'; exit 1; }
             grep '^WXPAY_TRANSFER_SCENE_ID=\|^WXPAY_TRANSFER_SCENE_INFO_TYPE=' .env
 
       - name: 🔄 安装依赖 + 编译 + 重启
@@ -73,12 +74,14 @@ jobs:
             set -e
             cd /var/www/tennispro-new
             pnpm install
+            node scripts/apply-v1594-migration.mjs
             npm run build
             pm2 restart tennispro-new
             echo "✅ 部署完成"
 
   # ===== Job 2: 上传小程序到微信 =====
   upload-miniapp:
+    needs: deploy-server
     runs-on: ubuntu-latest
     name: Upload Miniapp to WeChat
     steps:
