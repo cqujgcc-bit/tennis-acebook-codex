@@ -60,7 +60,10 @@ jobs:
             sed -i 's/^WXPAY_TRANSFER_SCENE_INFO_TYPE=.*/WXPAY_TRANSFER_SCENE_INFO_TYPE=1005/' .env
             grep -q '^WXPAY_TRANSFER_SCENE_INFO_TYPE=' .env || echo 'WXPAY_TRANSFER_SCENE_INFO_TYPE=1005' >> .env
             grep -q '^WXPAY_TRANSFER_NOTIFY_URL=' .env || echo 'WXPAY_TRANSFER_NOTIFY_URL=https://tennispro.cn/api/wxpay/transfer-notify' >> .env
-            node scripts/bootstrap-wxpay-platform-cert.mjs .env
+            PUBLIC_KEY_ESCAPED=$(awk '{printf "%s\\n", $0}' config/wechatpay_public_key.txt)
+            sed -i '/^WXPAY_PUBLIC_KEY_ID=/d;/^WXPAY_PUBLIC_KEY=/d' .env
+            printf 'WXPAY_PUBLIC_KEY_ID=%s\n' 'PUB_KEY_ID_0111135949532026061600191722002202' >> .env
+            printf 'WXPAY_PUBLIC_KEY=%s\n' "$PUBLIC_KEY_ESCAPED" >> .env
             test -n "$(grep '^WXPAY_PUBLIC_KEY=' .env | cut -d= -f2-)" || { echo '❌ WXPAY_PUBLIC_KEY 未配置，为防止支付回调中断，取消部署'; exit 1; }
             grep '^WXPAY_TRANSFER_SCENE_ID=\|^WXPAY_TRANSFER_SCENE_INFO_TYPE=' .env
 
