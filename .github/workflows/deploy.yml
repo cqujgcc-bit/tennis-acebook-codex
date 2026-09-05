@@ -4,6 +4,7 @@ on:
   push:
     branches:
       - main
+  workflow_dispatch:
 
 jobs:
   # ===== Job 1: 部署后端到阿里云 =====
@@ -32,6 +33,22 @@ jobs:
           port: 22
           script: |
             echo "✅ SSH 连接成功"
+
+      - name: 🔒 续期 HTTPS 证书
+        uses: appleboy/ssh-action@v1.2.0
+        with:
+          host: 120.78.0.96
+          username: root
+          password: ${{ secrets.ALIYUN_PASSWORD }}
+          port: 22
+          script: |
+            set -e
+            command -v certbot >/dev/null || { echo '❌ certbot 未安装'; exit 1; }
+            certbot renew --non-interactive --deploy-hook "nginx -t && systemctl reload nginx"
+            nginx -t
+            systemctl reload nginx
+            systemctl enable --now certbot.timer 2>/dev/null || true
+            echo "✅ HTTPS 证书检查/续期完成"
 
       - name: 📦 同步 server 代码到阿里云
         uses: appleboy/scp-action@v0.1.7
