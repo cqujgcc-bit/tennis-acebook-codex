@@ -35,6 +35,7 @@ jobs:
             echo "✅ SSH 连接成功"
 
       - name: 🔒 续期 HTTPS 证书
+        if: ${{ !contains(github.event.head_commit.message, '[diagnose-only]') }}
         uses: appleboy/ssh-action@v1.2.0
         with:
           host: 120.78.0.96
@@ -51,6 +52,7 @@ jobs:
             echo "✅ HTTPS 证书检查/续期完成"
 
       - name: 📦 同步 server 代码到阿里云
+        if: ${{ !contains(github.event.head_commit.message, '[diagnose-only]') }}
         uses: appleboy/scp-action@v0.1.7
         with:
           host: 120.78.0.96
@@ -63,6 +65,7 @@ jobs:
           rm: false
 
       - name: ⚙️ 更新微信转账场景配置
+        if: ${{ !contains(github.event.head_commit.message, '[diagnose-only]') }}
         uses: appleboy/ssh-action@v1.2.0
         with:
           host: 120.78.0.96
@@ -85,6 +88,7 @@ jobs:
             grep '^WXPAY_TRANSFER_SCENE_ID=\|^WXPAY_TRANSFER_SCENE_INFO_TYPE=' .env
 
       - name: 🔄 安装依赖 + 编译 + 重启
+        if: ${{ !contains(github.event.head_commit.message, '[diagnose-only]') }}
         uses: appleboy/ssh-action@v1.2.0
         with:
           host: 120.78.0.96
@@ -104,7 +108,7 @@ jobs:
       - name: 💰 安全恢复球局 71 结算
         id: recover_match_71
         if: contains(github.event.head_commit.message, '[recover-match-71]')
-        uses: appleboy/ssh-action@v1.2.0
+        uses: appleboy/ssh-action@v1.2.5
         with:
           host: 120.78.0.96
           username: root
@@ -130,6 +134,7 @@ jobs:
   # ===== Job 2: 上传小程序到微信 =====
   upload-miniapp:
     needs: deploy-server
+    if: ${{ !contains(github.event.head_commit.message, '[diagnose-only]') }}
     runs-on: ubuntu-latest
     name: Upload Miniapp to WeChat
     steps:
