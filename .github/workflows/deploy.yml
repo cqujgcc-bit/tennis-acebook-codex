@@ -102,6 +102,7 @@ jobs:
 
       # 仅本次带指定标记的发布执行。脚本会先查微信原单，绝不会在原单非终态时创建新单。
       - name: 💰 安全恢复球局 71 结算
+        id: recover_match_71
         if: contains(github.event.head_commit.message, '[recover-match-71]')
         uses: appleboy/ssh-action@v1.2.0
         with:
@@ -109,10 +110,22 @@ jobs:
           username: root
           password: ${{ secrets.ALIYUN_PASSWORD }}
           port: 22
+          capture_stdout: true
           script: |
-            set -e
+            set +e
             cd /var/www/tennispro-new
             pnpm exec tsx scripts/recover-match-settlement.ts 71 --execute
+            RECOVERY_CODE=$?
+            echo "RECOVERY_EXIT_CODE=$RECOVERY_CODE"
+            exit 0
+
+      - name: 📋 发布结算恢复诊断
+        if: always() && contains(github.event.head_commit.message, '[recover-match-71]')
+        env:
+          RECOVERY_OUTPUT: ${{ steps.recover_match_71.outputs.stdout }}
+        run: |
+          ONE_LINE=$(printf '%s' "$RECOVERY_OUTPUT" | tr '\n' ' ' | tail -c 4000)
+          echo "::notice title=Settlement recovery 71::$ONE_LINE"
 
   # ===== Job 2: 上传小程序到微信 =====
   upload-miniapp:
