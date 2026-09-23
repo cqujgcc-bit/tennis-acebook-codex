@@ -1,0 +1,26 @@
+.page { min-height: 100vh; background: #f4f6f5; padding-bottom: 40rpx; }
+.tabs { display: flex; background: #fff; position: sticky; top: 0; z-index: 5; }
+.tab { flex: 1; text-align: center; padding: 28rpx 0; font-size: 28rpx; color: #666; position: relative; }
+.tab.active { color: #0B3D2E; font-weight: 700; }
+.tab.active::after { content: ''; position: absolute; bottom: 0; left: 50%; transform: translateX(-50%); width: 56rpx; height: 6rpx; background: #D4FF3F; border-radius: 4rpx; }
+
+.loading-tip, .empty { text-align: center; color: #999; font-size: 28rpx; padding: 80rpx 0; }
+
+.fb-list { padding: 24rpx; }
+.fb-card { background: #fff; border-radius: 24rpx; padding: 28rpx; margin-bottom: 22rpx; box-shadow: 0 2rpx 10rpx rgba(0,0,0,0.04); }
+.fb-top { display: flex; align-items: center; justify-content: space-between; }
+.fb-user { display: flex; align-items: center; }
+.fb-avatar { width: 56rpx; height: 56rpx; border-radius: 50%; background: #eee; margin-right: 16rpx; }
+.fb-name { font-size: 28rpx; color: #333; font-weight: 600; }
+.fb-tags { display: flex; }
+.tag { font-size: 20rpx; border-radius: 8rpx; padding: 4rpx 12rpx; margin-left: 10rpx; }
+.tag.cat { background: #eef6f0; color: #0B3D2E; }
+.tag.status.pending { background: #fff3e0; color: #e8830c; }
+.tag.status.replied { background: #e8f5e9; color: #2e7d32; }
+.tag.status.closed { background: #f0f0f0; color: #999; }
+.fb-content { font-size: 30rpx; color: #222; line-height: 1.6; margin: 20rpx 0 12rpx; }
+.fb-meta { font-size: 22rpx; color: #999; }
+.fb-reply { background: #f6faf5; border-left: 6rpx solid #0B3D2E; padding: 16rpx 20rpx; border-radius: 8rpx; font-size: 26rpx; color: #444; margin-top: 18rpx; line-height: 1.5; }
+.reply-label { color: #0B3D2E; font-weight: 600; }
+.fb-actions { display: flex; justify-content: flex-end; margin-top: 18rpx; }
+.btn-reply { background: #0B3D2E; color: #fff; font-size: 24rpx; }

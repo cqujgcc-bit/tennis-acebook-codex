@@ -100,6 +100,20 @@ jobs:
             pm2 restart tennispro-new
             echo "✅ 部署完成"
 
+      # 仅本次带指定标记的发布执行。脚本会先查微信原单，绝不会在原单非终态时创建新单。
+      - name: 💰 安全恢复球局 71 结算
+        if: contains(github.event.head_commit.message, '[recover-match-71]')
+        uses: appleboy/ssh-action@v1.2.0
+        with:
+          host: 120.78.0.96
+          username: root
+          password: ${{ secrets.ALIYUN_PASSWORD }}
+          port: 22
+          script: |
+            set -e
+            cd /var/www/tennispro-new
+            pnpm exec tsx scripts/recover-match-settlement.ts 71 --execute
+
   # ===== Job 2: 上传小程序到微信 =====
   upload-miniapp:
     needs: deploy-server

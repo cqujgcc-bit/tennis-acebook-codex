@@ -1,0 +1,74 @@
+name: 自动部署到阿里云
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  deploy:
+    name: 构建并部署
+    runs-on: ubuntu-22.04
+    timeout-minutes: 15
+
+    steps:
+      - name: 检出代码
+        uses: actions/checkout@v4
+
+      - name: 安装 Node.js 22
+        uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+
+      - name: 启用 Corepack（自动读取 packageManager 字段）
+        run: corepack enable
+
+      - name: 缓存 pnpm 依赖
+        uses: actions/cache@v4
+        with:
+          path: ~/.pnpm-store
+          key: ${{ runner.os }}-pnpm-${{ hashFiles('**/pnpm-lock.yaml') }}
+          restore-keys: |
+            ${{ runner.os }}-pnpm-
+
+      - name: 安装依赖
+        run: pnpm install --frozen-lockfile
+
+      - name: 构建项目
+        run: pnpm build
+        env:
+          NODE_ENV: production
+          VITE_APP_TITLE: 网球约课平台
+          VITE_APP_ID: iYpNGgVkZSdLGiKEpy6cWP
+          VITE_OAUTH_PORTAL_URL: https://oauth.manus.im
+          VITE_FRONTEND_FORGE_API_URL: https://forge.manus.ai
+          VITE_FRONTEND_FORGE_API_KEY: mk4kjXCKE7FPdxghDYHTVF
+
+      - name: 打包构建产物
+        run: tar -czf deploy.tar.gz dist/
+
+      - name: 上传到服务器
+        uses: appleboy/scp-action@v0.1.7
+        with:
+          host: ${{ secrets.DEPLOY_HOST }}
+          username: ${{ secrets.DEPLOY_USER }}
+          key: ${{ secrets.DEPLOY_SSH_KEY }}
+          source: deploy.tar.gz
+          target: /root/
+
+      - name: 重启应用
+        uses: appleboy/ssh-action@v1.0.3
+        with:
+          host: ${{ secrets.DEPLOY_HOST }}
+          username: ${{ secrets.DEPLOY_USER }}
+          key: ${{ secrets.DEPLOY_SSH_KEY }}
+          script: |
+            set -e
+            cd /var/www/tennispro
+            tar -xzf /root/deploy.tar.gz
+            rm /root/deploy.tar.gz
+            pm2 restart tennispro
+            sleep 10
+            pm2 list | grep tennispro
+            curl -s -o /dev/null -w "HTTP状态码: %{http_code}\n" http://localhost:3000/|| true
+            echo "部署完成"

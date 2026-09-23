@@ -1,0 +1,6 @@
+.doc-page { min-height: 100vh; box-sizing: border-box; background: #F4F6F5; padding: 40rpx 32rpx 80rpx; }
+.doc-title { color: #0B3D2E; font-size: 42rpx; font-weight: 800; }
+.updated { color: #8B9690; font-size: 23rpx; margin: 12rpx 0 28rpx; }
+.section { background: #fff; border-radius: 20rpx; padding: 28rpx; margin-bottom: 20rpx; }
+.section-title { color: #193C30; font-size: 30rpx; font-weight: 700; margin-bottom: 14rpx; }
+.paragraph { color: #4C5B54; font-size: 27rpx; line-height: 1.8; }

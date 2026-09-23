@@ -1,0 +1,39 @@
+<view class="doc-page">
+  <view class="doc-title">AceBook 用户协议</view>
+  <view class="updated">更新日期：2026年9月7日</view>
+
+  <view class="section">
+    <view class="section-title">一、服务说明</view>
+    <view class="paragraph">AceBook 由深圳市气球人科技有限公司提供，用于发布和加入网球球局、组织圈子、查询场地预订入口，以及完成球局相关费用的支付、退款和结算。</view>
+  </view>
+
+  <view class="section">
+    <view class="section-title">二、账号与资料</view>
+    <view class="paragraph">你应提供真实、合法且不侵犯他人权益的昵称、头像和球局信息，并妥善使用自己的微信账号。不得冒用他人身份、发布违法信息或干扰平台正常运行。</view>
+  </view>
+
+  <view class="section">
+    <view class="section-title">三、约球与履约</view>
+    <view class="paragraph">发起人应准确填写时间、地点、人数和费用规则；参与者应在确认加入后按时到场。取消、替补、退款和信用分变动以球局页面当时展示的规则为准。</view>
+  </view>
+
+  <view class="section">
+    <view class="section-title">四、费用说明</view>
+    <view class="paragraph">收费球局中的款项用于球局场地费等共同支出。支付和退款由微信支付等服务商处理，到账时间受支付渠道规则影响。若发现重复支付或金额异常，请立即通过“我的—意见反馈”联系我们处理。</view>
+  </view>
+
+  <view class="section">
+    <view class="section-title">五、安全提示</view>
+    <view class="paragraph">网球运动存在受伤风险，请根据自身身体状况参与，做好热身和防护，并遵守场馆规则。用户线下交流、运动和自行达成的其他安排，应自行判断并注意人身及财产安全。</view>
+  </view>
+
+  <view class="section">
+    <view class="section-title">六、违规处理</view>
+    <view class="paragraph">对恶意爽约、欺诈、骚扰、虚假信息或其他违规行为，我们可根据情况采取提醒、限制功能、降低信用分或停止服务等措施。</view>
+  </view>
+
+  <view class="section">
+    <view class="section-title">七、协议更新与联系</view>
+    <view class="paragraph">我们可能因功能或规则变化更新本协议，并在小程序内公布。若你对协议或订单处理有疑问，可通过“我的—意见反馈”联系我们。</view>
+  </view>
+</view>

@@ -1,0 +1,39 @@
+<view class="doc-page">
+  <view class="doc-title">AceBook 隐私政策</view>
+  <view class="updated">更新日期：2026年9月7日</view>
+
+  <view class="section">
+    <view class="section-title">一、我们收集的信息</view>
+    <view class="paragraph">为完成登录和提供约球服务，我们会处理微信登录标识、你主动设置的昵称、头像、性别、网球水平和城市信息。手机号仅在你主动授权时获取，用于支付核验、账号联系和球局服务。</view>
+  </view>
+
+  <view class="section">
+    <view class="section-title">二、位置权限</view>
+    <view class="paragraph">当你主动使用“附近球局”或选择场地位置时，小程序才会请求位置权限，用于计算距离或填写球局地点。拒绝授权不会影响浏览普通球局。</view>
+  </view>
+
+  <view class="section">
+    <view class="section-title">三、球局与支付信息</view>
+    <view class="paragraph">我们会保存你发布、加入、退出和结算球局的记录，以及必要的支付订单号、金额和状态，用于完成报名、退款、对账、纠纷处理和防止重复扣款。银行卡等支付凭证由微信支付处理，我们不会获取你的支付密码。</view>
+  </view>
+
+  <view class="section">
+    <view class="section-title">四、信息展示与共享</view>
+    <view class="paragraph">你的昵称、头像、网球水平及相关球局信息可能向同一球局或圈子的用户展示。我们不会在公开页面展示完整手机号，也不会向无关第三方出售个人信息。为提供登录、支付、存储和消息能力，必要信息可能由微信及相关技术服务商按照各自规则处理。</view>
+  </view>
+
+  <view class="section">
+    <view class="section-title">五、保存与安全</view>
+    <view class="paragraph">我们在实现服务、履行法定义务和处理争议所需的期限内保存相关信息，并采取访问控制、身份校验和传输保护等措施降低信息泄露风险。</view>
+  </view>
+
+  <view class="section">
+    <view class="section-title">六、你的权利</view>
+    <view class="paragraph">你可以在小程序中修改头像和个人资料。若需查询、更正或删除其他个人信息，或申请注销账号，请通过“我的—意见反馈”联系我们；我们将在核实身份后处理。</view>
+  </view>
+
+  <view class="section">
+    <view class="section-title">七、联系我们</view>
+    <view class="paragraph">本服务由深圳市气球人科技有限公司提供。如有隐私问题，请通过“我的—意见反馈”提交，我们会尽快核实处理。</view>
+  </view>
+</view>
