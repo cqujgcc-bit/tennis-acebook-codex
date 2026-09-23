@@ -100,11 +100,12 @@ jobs:
             cd /var/www/tennispro-new
             pnpm install
             node scripts/apply-v1594-migration.mjs
+            node scripts/apply-v1599-settlement-split.mjs
             npm run build
             pm2 restart tennispro-new
             echo "✅ 部署完成"
 
-      # 仅本次带指定标记的发布执行。脚本会先查微信原单，绝不会在原单非终态时创建新单。
+      # 仅本次带指定标记的发布执行。¥255 拆为 ¥200+¥55；上一笔成功后才会发下一笔。
       - name: 💰 安全恢复球局 71 结算
         id: recover_match_71
         if: contains(github.event.head_commit.message, '[recover-match-71]')

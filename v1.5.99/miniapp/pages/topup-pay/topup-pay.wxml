@@ -1,0 +1,24 @@
+<view class="page" wx:if="{{!loading}}">
+  <view class="amount-card">
+    <text class="amt-label">待补缴金额</text>
+    <text class="amt-value">¥{{topupYuan}}</text>
+    <text class="amt-match">{{title}}</text>
+  </view>
+
+  <view class="reason-card">
+    <view class="reason-title">为什么需要补缴？</view>
+    <view class="reason-text">该球局结束后，发起人按<text class="hl">实际到场人数</text>重新均摊了场地费。由于到场人数少于报名预扣时的人数，人均费用上升，您报名时预付的金额不足，需补缴差额。</view>
+    <view class="reason-text">补缴完成后，该笔费用将结算给球局发起人。未结清待缴费用将无法报名新的球局。</view>
+  </view>
+
+  <view class="footer">
+    <button class="btn-primary" loading="{{paying}}" bindtap="onPay">立即补缴 ¥{{topupYuan}}</button>
+  </view>
+</view>
+
+<view class="ok" wx:if="{{done}}">
+  <text class="ok-icon">✓</text>
+  <text class="ok-text">补缴成功</text>
+</view>
+
+<view class="loading" wx:if="{{loading}}">加载中...</view>

@@ -1,0 +1,49 @@
+<view class="chat-page">
+  <scroll-view
+    class="msg-scroll"
+    scroll-y
+    scroll-into-view="{{scrollTo}}"
+    scroll-with-animation
+    style="height:{{scrollHeight}}px;"
+  >
+    <view class="msg-list">
+      <view wx:if="{{loading}}" class="tip">加载中...</view>
+      <view wx:elif="{{messages.length === 0}}" class="tip">还没有消息，发条消息和球友打个招呼吧 🎾</view>
+
+      <view wx:for="{{messages}}" wx:key="id" id="msg-{{item.id}}">
+        <!-- 系统消息 -->
+        <view wx:if="{{item.msgType === 'system'}}" class="sys-msg">{{item.content}}</view>
+
+        <!-- 普通消息 -->
+        <view wx:else class="msg {{item.isSelf ? 'msg-self' : ''}}">
+          <view class="msg-avatar" style="{{item.userAvatar ? 'background-image:url('+ item.userAvatar +')' : ''}}">
+            <text wx:if="{{!item.userAvatar}}">{{item.initial}}</text>
+          </view>
+          <view class="msg-body">
+            <text wx:if="{{!item.isSelf}}" class="msg-name">{{item.userName}}</text>
+            <view class="msg-bubble">{{item.content}}</view>
+          </view>
+        </view>
+      </view>
+    </view>
+    <view id="bottom-anchor" style="height:1rpx;"></view>
+  </scroll-view>
+
+  <view class="input-bar" style="transform:translateY(-{{keyboardPad}}px);">
+    <input
+      class="input-box"
+      value="{{draft}}"
+      placeholder="说点什么..."
+      confirm-type="send"
+      adjust-position="{{false}}"
+      cursor-spacing="20"
+      hold-keyboard="{{true}}"
+      bindinput="onDraftInput"
+      bindfocus="onFocus"
+      bindblur="onBlur"
+      bindkeyboardheightchange="onKbHeight"
+      bindconfirm="onSend"
+    />
+    <view class="send-btn {{draft ? 'active' : ''}}" bindtap="onSend">发送</view>
+  </view>
+</view>

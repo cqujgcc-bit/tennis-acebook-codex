@@ -1,0 +1,1 @@
+ALTER TABLE `tennis_matches` ADD `circleOnly` boolean DEFAULT false NOT NULL;
